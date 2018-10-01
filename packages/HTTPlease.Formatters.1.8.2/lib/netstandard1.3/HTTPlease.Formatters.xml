@@ -1,0 +1,1552 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HTTPlease.Formatters</name>
+    </assembly>
+    <members>
+        <member name="T:HTTPlease.Formatters.ContentExtensions">
+            <summary>
+            	Extension methods for working with <see cref="T:System.Net.Http.HttpContent"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.ContentExtensions.ReadAsAsync``1(System.Net.Http.HttpContent,HTTPlease.Formatters.IInputFormatter)">
+            <summary>
+            	Asynchronously read the body content as the specified type.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data-type that the body content will be deserialised into.
+            </typeparam>
+            <param name="content">
+            	The <see cref="T:System.Net.Http.HttpContent"/> to read.
+            </param>
+            <param name="formatter">
+            	The content formatter used to deserialise the body content.
+            </param>
+            <returns>
+            	The deserialised body content.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.ContentExtensions.ReadAsAsync``1(System.Net.Http.HttpContent,HTTPlease.Formatters.IInputFormatter,HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Asynchronously read the body content as the specified type.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data-type that the body content will be deserialised into.
+            </typeparam>
+            <param name="content">
+            	The <see cref="T:System.Net.Http.HttpContent"/> to read.
+            </param>
+            <param name="formatter">
+            	The content formatter used to deserialise the body content.
+            </param>
+            <param name="formatterContext">
+            	Contextual information about the content body being deserialised.
+            </param>
+            <returns>
+            	The deserialised body content.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.ContentExtensions.CreateInputFormatterContext``1(System.Net.Http.HttpContent)">
+            <summary>
+            	Create an <see cref="T:HTTPlease.Formatters.InputFormatterContext"/> for reading the HTTP message content.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data type into which the message body will be deserialised.
+            </typeparam>
+            <param name="content">
+            	The HTTP message content.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.Formatters.InputFormatterContext"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.FormattedObjectContent">
+            <summary>
+            	HTTP content formatted using an <see cref="T:HTTPlease.Formatters.IOutputFormatter"/>.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.FormattedObjectContent.DefaultEncoding">
+            <summary>
+            	The default encoding used by <see cref="T:HTTPlease.Formatters.FormattedObjectContent"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormattedObjectContent.#ctor(HTTPlease.Formatters.IOutputFormatter,System.Type,System.Object,System.String)">
+            <summary>
+            	Create new formatted object content.
+            </summary>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IOutputFormatter"/> that will be used to serialise the data.
+            </param>
+            <param name="data">
+            	The data that will be serialised to form the content.
+            </param>
+            <param name="dataType">
+            	The type of data that will be serialised to form the content.
+            </param>
+            <param name="mediaType">
+            	The content type being serialised.
+            </param>
+            <remarks>
+            	Uses UTF-8 encoding.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormattedObjectContent.#ctor(HTTPlease.Formatters.IOutputFormatter,System.Object,System.Type,System.String,System.Text.Encoding)">
+            <summary>
+            	Create new formatted object content.
+            </summary>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IOutputFormatter"/> that will be used to serialise the data.
+            </param>
+            <param name="data">
+            	The data that will be serialised to form the content.
+            </param>
+            <param name="dataType">
+            	The type of data that will be serialised to form the content.
+            </param>
+            <param name="mediaType">
+            	The media type that the formatter should produce.
+            </param>
+            <param name="encoding">
+            	The <see cref="P:HTTPlease.Formatters.FormattedObjectContent.Encoding"/> that the formatter should use for serialised data.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormattedObjectContent.#ctor(HTTPlease.Formatters.IOutputFormatter,HTTPlease.Formatters.OutputFormatterContext)">
+            <summary>
+            	Create new formatted object content.
+            </summary>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IOutputFormatter"/> that will be used to serialise the data.
+            </param>
+            <param name="formatterContext">
+            	Contextual information use by the <see cref="T:HTTPlease.Formatters.IOutputFormatter"/>.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.Formatter">
+            <summary>
+            	The <see cref="T:HTTPlease.Formatters.IOutputFormatter"/> that will be used to serialise the data.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.FormatterContext">
+            <summary>
+            	Contextual information use by the <see cref="P:HTTPlease.Formatters.FormattedObjectContent.Formatter"/>.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.DataType">
+            <summary>
+            	The type of data that will be serialised to form the content.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.Data">
+            <summary>
+            	The data that will be serialised to form the content.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.MediaType">
+            <summary>
+            	The media type that the formatter should produce.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormattedObjectContent.Encoding">
+            <summary>
+            	The <see cref="P:HTTPlease.Formatters.FormattedObjectContent.Encoding"/> that the formatter should use for serialised data.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormattedObjectContent.TryComputeLength(System.Int64@)">
+             <summary>
+                 Try to pre-compute the formatted content length.
+             </summary>
+             <param name="length">
+                 The length (in bytes) of the content.
+            
+            		Always -1, since <see cref="T:HTTPlease.Formatters.FormattedObjectContent"/> length is not known before serialisation.
+             </param>
+             <returns>
+                 <c>false</c>.
+             </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormattedObjectContent.SerializeToStreamAsync(System.IO.Stream,System.Net.TransportContext)">
+             <summary>
+                 Serialize the HTTP content to a stream as an asynchronous operation.
+             </summary>
+             <param name="stream">
+                 The target stream.
+             </param>
+             <param name="context">
+                 Information about the transport (channel binding token, for example).
+            
+            		Can be null.
+             </param>
+             <returns>
+                 Returns <see cref="T:System.Threading.Tasks.Task" />.The task object representing the asynchronous operation.
+             </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.FormatterCollection">
+            <summary>
+            	A collection of <see cref="T:HTTPlease.Formatters.IFormatter">content formatter</see>s.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.FormatterCollection._formatters">
+            <summary>
+            	The underlying collection of formatters, keyed by type.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.#ctor">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.FormatterCollection"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.#ctor(HTTPlease.Formatters.FormatterCollection)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.FormatterCollection"/> by copying the specified <see cref="T:HTTPlease.Formatters.FormatterCollection"/>.
+            </summary>
+            <param name="formatterCollection">
+            	The <see cref="T:HTTPlease.Formatters.FormatterCollection"/> to copy.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.#ctor(System.Collections.Generic.IEnumerable{HTTPlease.Formatters.IFormatter})">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.FormatterCollection"/>.
+            </summary>
+            <param name="formatters">
+            	The formatters that the collection will initially contain.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.#ctor(HTTPlease.Formatters.IFormatter[])">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.FormatterCollection"/>.
+            </summary>
+            <param name="formatters">
+            	The formatters that the collection will initially contain.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormatterCollection.Count">
+            <summary>
+            	The number of formatters in the collection.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Add(HTTPlease.Formatters.IFormatter)">
+            <summary>
+            	Add a formatter to the collection.
+            </summary>
+            <param name="formatter">
+            	The formatter to add.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Contains(HTTPlease.Formatters.IFormatter)">
+            <summary>
+            	Determine whether the collection contains the specified formatter instance.
+            </summary>
+            <param name="formatter">
+            	The formatter.
+            </param>
+            <returns>
+            	<c>true</c>, if the collection contains the formatter; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Contains(System.Type)">
+            <summary>
+            	Determine whether the collection contains a formatter of the specified type.
+            </summary>
+            <param name="formatterType">
+            	The formatter type.
+            </param>
+            <returns>
+            	<c>true</c>, if the collection contains a formatter of the specified type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Remove(HTTPlease.Formatters.IFormatter)">
+            <summary>
+            	Remove the specified formatter (if it is present in the collection).
+            </summary>
+            <param name="formatter">
+            	The formatter to remove.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter was removed; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Remove(System.Type)">
+            <summary>
+            	Remove the formatter of the specified type (if it is present in the collection).
+            </summary>
+            <param name="formatterType">
+            	The type of formatter to remove.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter was removed; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.Clear">
+            <summary>
+            	Remove all formatters from the collection.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.FindInputFormatter(HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Get the most appropriate <see cref="T:HTTPlease.Formatters.IInputFormatter">formatter</see> to read the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data to deserialise.
+            </param>
+            <returns>
+            	The formatter, or <c>null</c> if none of the formatters in the collection can handle the specified content type.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="context"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.FindOutputFormatter(HTTPlease.Formatters.OutputFormatterContext)">
+            <summary>
+            	Find the most appropriate <see cref="T:HTTPlease.Formatters.IOutputFormatter">formatter</see> to write the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data to deserialise.
+            </param>
+            <returns>
+            	The formatter, or <c>null</c> if none of the formatters in the collection can handle the specified content type.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="context"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.GetEnumerator">
+            <summary>
+            	Get a typed enumerator for the formatters in the collection.
+            </summary>
+            <returns>
+            	The enumerator.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            	Get an untyped enumerator for the formatters in the collection.
+            </summary>
+            <returns>
+            	The enumerator.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.Formatters.FormatterCollection.System#Collections#Generic#ICollection{HTTPlease#Formatters#IFormatter}#IsReadOnly">
+            <summary>
+            	Is the collection read-only?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollection.CopyTo(HTTPlease.Formatters.IFormatter[],System.Int32)">
+            <summary>
+            	Copy the formatters in the collection to an array.
+            </summary>
+            <param name="array">
+            	The destination array.
+            </param>
+            <param name="arrayIndex">
+            	The starting index in the destination array.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Formatters.FormatterCollectionExtensions">
+            <summary>
+            	Extension methods for working with <see cref="T:HTTPlease.Formatters.IFormatterCollection"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.FormatterCollectionExtensions.Remove``1(HTTPlease.Formatters.IFormatterCollection)">
+            <summary>
+            	Remove the formatter of the specified type from the collection (if it is present).
+            </summary>
+            <typeparam name="TFormatter">
+            	The type of formatter to remove.
+            </typeparam>
+            <param name="formatters">
+            	The formatter to remove.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter was removed; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.IFormatter">
+            <summary>
+            	Represents a content formatter.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.IFormatter.SupportedMediaTypes">
+            <summary>
+            	Content types supported by the formatter.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Formatters.IFormatterCollection">
+            <summary>
+            	Represents a collection of <see cref="T:HTTPlease.Formatters.IFormatter">content formatter</see>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.IFormatterCollection.FindInputFormatter(HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Get the most appropriate <see cref="T:HTTPlease.Formatters.IInputFormatter">formatter</see> to read the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data to deserialise.
+            </param>
+            <returns>
+            	The formatter, or <c>null</c> if none of the formatters in the collection can handle the specified content type.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="context"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Formatters.IFormatterCollection.FindOutputFormatter(HTTPlease.Formatters.OutputFormatterContext)">
+            <summary>
+            	Find the most appropriate <see cref="T:HTTPlease.Formatters.IOutputFormatter">formatter</see> to write the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data to deserialise.
+            </param>
+            <returns>
+            	The formatter, or <c>null</c> if none of the formatters in the collection can handle the specified content type.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="context"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Formatters.IFormatterCollection.Contains(System.Type)">
+            <summary>
+            	Determine whether the collection contains a formatter of the specified type.
+            </summary>
+            <param name="formatterType">
+            	The formatter type.
+            </param>
+            <returns>
+            	<c>true</c>, if the collection contains a formatter of the specified type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.IFormatterCollection.Remove(System.Type)">
+            <summary>
+            	Remove the formatter of the specified type (if it is present in the collection).
+            </summary>
+            <param name="formatterType">
+            	The type of formatter to remove.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter was removed; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.IInputFormatter">
+            <summary>
+            	Represents a facility for deserialising data for one or more media types.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.IInputFormatter.CanRead(HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Determine whether the formatter can deserialise the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter can deserialise the data; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.IInputFormatter.ReadAsync(HTTPlease.Formatters.InputFormatterContext,System.IO.Stream)">
+            <summary>
+            	Asynchronously deserialise data from an input stream.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <param name="stream">
+            	The input stream from which to read serialised data.
+            </param>
+            <returns>
+            	The deserialised object.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.IInputOutputFormatter">
+            <summary>
+            	Represents a formatter that can both serialise and deserialise data.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Formatters.InputFormatterContext">
+            <summary>
+            	Contextual information used by input formatters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.InputFormatterContext.#ctor(System.Type,System.String,System.Text.Encoding)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.InputFormatterContext"/>.
+            </summary>
+            <param name="dataType">
+            	The CLR type into which the data will be deserialised.
+            </param>
+            <param name="mediaType">
+            	The media type that the formatter should expect.
+            </param>
+            <param name="encoding">
+            	The content encoding that the formatter should expect.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Formatters.InputFormatterContext.DataType">
+            <summary>
+            	The CLR type into which the data will be deserialised.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.InputFormatterContext.MediaType">
+            <summary>
+            	The media type that the formatter should expect.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.InputFormatterContext.Encoding">
+            <summary>
+            	The content encoding that the formatter should expect.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.InputFormatterContext.CreateReader(System.IO.Stream)">
+            <summary>
+            	Create a <see cref="T:System.IO.TextReader"/> from the specified input stream.
+            </summary>
+            <param name="inputStream">
+            	The input stream.
+            </param>
+            <returns>
+            	The <see cref="T:System.IO.TextReader"/>.
+            </returns>
+            <remarks>
+            	The <see cref="T:System.IO.TextReader"/>, when closed, will not close the input stream.
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.Formatters.IOutputFormatter">
+            <summary>
+            	Represents a facility for serialising data to one or more media types.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.IOutputFormatter.CanWrite(HTTPlease.Formatters.OutputFormatterContext)">
+            <summary>
+            	Determine whether the formatter can serialise the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being serialised.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter can serialise the data; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.IOutputFormatter.WriteAsync(HTTPlease.Formatters.OutputFormatterContext,System.IO.Stream)">
+            <summary>
+            	Asynchronously serialise data to an output stream.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <param name="stream">
+            	The output stream to which the serialised data will be written.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.OutputFormatterContext">
+            <summary>
+            	Contextual information used by output formatters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.OutputFormatterContext.#ctor(System.Object,System.Type,System.String,System.Text.Encoding)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.OutputFormatterContext"/>.
+            </summary>
+            <param name="data">
+            	The data being serialised.
+            </param>
+            <param name="dataType">
+            	The CLR type whose data will be serialised.
+            </param>
+            <param name="mediaType">
+            	The media type that the formatter should produced.
+            </param>
+            <param name="encoding">
+            	The content encoding that the formatter should use.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Formatters.OutputFormatterContext.Data">
+            <summary>
+            	The data being serialised.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.OutputFormatterContext.DataType">
+            <summary>
+            	The CLR type whose data will be serialised.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.OutputFormatterContext.MediaType">
+            <summary>
+            	The content type being serialised.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.OutputFormatterContext.Encoding">
+            <summary>
+            	The content encoding.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.OutputFormatterContext.CreateWriter(System.IO.Stream)">
+            <summary>
+            	Create a <see cref="T:System.IO.TextWriter"/> from the specified output stream.
+            </summary>
+            <param name="outputStream">
+            	The output stream.
+            </param>
+            <returns>
+            	The <see cref="T:System.IO.TextWriter"/>.
+            </returns>
+            <remarks>
+            	The <see cref="T:System.IO.TextWriter"/>, when closed, will not close the output stream.
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.Formatters.StreamHelper">
+            <summary>
+            	Helper methods for formatters working with streams.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.StreamHelper.DefaultBufferSize">
+            <summary>
+            	The default buffer size for <see cref="T:System.IO.TextReader"/>s / <see cref="T:System.IO.TextWriter"/>s created by the helper.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.StreamHelper.CreateTransientTextReader(System.IO.Stream,System.Text.Encoding,System.Int32)">
+            <summary>
+            	Create a <see cref="T:System.IO.TextReader"/> that, when it is closed, leaves its input stream open.
+            </summary>
+            <param name="inputStream">
+            	The input stream.
+            </param>
+            <param name="encoding">
+            	The stream's text encoding.
+            </param>
+            <param name="bufferSize">
+            	An optional buffer size.
+            
+            	Defaults to <see cref="F:HTTPlease.Formatters.StreamHelper.DefaultBufferSize"/>.
+            </param>
+            <returns>
+            	The <see cref="T:System.IO.TextReader"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.StreamHelper.CreateTransientTextWriter(System.IO.Stream,System.Text.Encoding,System.Int32)">
+            <summary>
+            	Create a <see cref="T:System.IO.TextWriter"/> that, when it is closed, leaves its output stream open.
+            </summary>
+            <param name="outputStream">
+            	The output stream.
+            </param>
+            <param name="encoding">
+            	The stream's text encoding.
+            </param>
+            <param name="bufferSize">
+            	An optional buffer size.
+            
+            	Defaults to <see cref="F:HTTPlease.Formatters.StreamHelper.DefaultBufferSize"/>.
+            </param>
+            <returns>
+            	The <see cref="T:System.IO.TextWriter"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.WellKnownMediaTypes">
+            <summary>
+            	Well-known media type constants.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.WellKnownMediaTypes.Json">
+            <summary>
+            	The JSON media type.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.WellKnownMediaTypes.PlainText">
+            <summary>
+            	The plain-text media type.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Formatters.WellKnownMediaTypes.Xml">
+            <summary>
+            	The JSON media type.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.OutputEncoding">
+            <summary>
+            	Well-known text encodings for output (i.see. no preambles).
+            </summary>
+            <remarks>
+            	Some web APIs don't like being sent preambles to indicate text encoding (usually indicated by HTTP headers instead).
+            </remarks>
+        </member>
+        <member name="F:HTTPlease.OutputEncoding.UTF8">
+            <summary>
+            	UTF-8 encoding (no preamble).
+            </summary>
+        </member>
+        <member name="F:HTTPlease.OutputEncoding.Unicode">
+            <summary>
+            	Unicode / UTF-16 encoding (no preamble).
+            </summary>
+        </member>
+        <member name="T:HTTPlease.FormatterClientExtensions">
+            <summary>
+            	Extension methods for invocation of untyped <see cref="T:HTTPlease.HttpRequest"/>s using an <see cref="T:System.Net.Http.HttpClient"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PostAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.String,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP POST.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="postBody">
+            	An optional object to be used as the the request body.
+            </param>
+            <param name="mediaType">
+            	If <paramref name="postBody"/> is specified, the media type to be used
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PostAsJsonAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously perform an HTTP POST request, serialising the request to JSON.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="postBody">
+            	The object that will be serialised into the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the operation.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task`1"/> representing the asynchronous request, whose result is the response message.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PutAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.String,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PUT.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="putBody">
+            	An optional object to be used as the the request body.
+            </param>
+            <param name="mediaType">
+            	If <paramref name="putBody"/> is specified, the media type to be used
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PutAsJsonAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously perform an HTTP PUT request, serialising the request to JSON.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="putBody">
+            	The object that will be serialised into the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the operation.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task`1"/> representing the asynchronous request, whose result is the response message.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PatchAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.String,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PATCH.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="patchBody">
+            	An optional object to be used as the the request body.
+            </param>
+            <param name="mediaType">
+            	If <paramref name="patchBody"/> is specified, the media type to be used
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.PatchAsJsonAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously perform an HTTP PATCH request, serialising the request to JSON.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="patchBody">
+            	The object that will be serialised into the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the operation.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task`1"/> representing the asynchronous request, whose result is the response message.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.DeleteAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.String,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP DELETE.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="deleteBody">
+            	An optional object to be used as the the request body.
+            </param>
+            <param name="mediaType">
+            	If <paramref name="deleteBody"/> is specified, the media type to be used
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterClientExtensions.DeleteAsJsonAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Object,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP DELETE, serialising the request to JSON.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="deleteBody">
+            	An optional object to be used as the the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.FormatterRequestExtensions">
+            <summary>
+            	Extension methods for working with <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.ExpectJson(HTTPlease.HttpRequest)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, configuring it to accept the JSON ("application/json") media type.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.ExpectJson``1(HTTPlease.HttpRequest{``0})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, configuring it to accept the JSON ("application/json") media type.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.ExpectXml(HTTPlease.HttpRequest)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, configuring it to accept the XML ("application/json") media type.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.ExpectXml``1(HTTPlease.HttpRequest{``0})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, configuring it to accept the XML ("application/json") media type.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.BuildRequestMessage(HTTPlease.HttpRequest,System.Net.Http.HttpMethod,System.Object,System.String,System.Uri)">
+            <summary>
+            	Build an HTTP request message, selecting an appropriate content formatter to serialise its body content.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="httpMethod">
+            	The HTTP request method.
+            </param>
+            <param name="bodyContent">
+            	The request body content.
+            </param>
+            <param name="mediaType">
+            	The request body media type to use.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.BuildRequestMessage(HTTPlease.HttpRequest,System.Net.Http.HttpMethod,System.Object,System.String,System.Text.Encoding,System.Uri)">
+            <summary>
+            	Build an HTTP request message, selecting an appropriate content formatter to serialise its body content.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="httpMethod">
+            	The HTTP request method.
+            </param>
+            <param name="bodyContent">
+            	The request body content.
+            </param>
+            <param name="mediaType">
+            	The request body media type to use.
+            </param>
+            <param name="encoding">
+            	The request body encoding to use.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.WithFormatter(HTTPlease.HttpRequest,HTTPlease.Formatters.IFormatter)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, adding the specified content formatter.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="formatter">
+            	The content formatter to add.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.WithoutFormatter(HTTPlease.HttpRequest,System.Type)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, adding the specified content formatter.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="formatterType">
+            	The type of content formatter to remove.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.GetFormatters(HTTPlease.HttpRequest)">
+            <summary>
+            	Get the collection formatters used by the <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	An immutable dictionary of formatters, keyed by type.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterRequestExtensions.CreateFormatterCollection(HTTPlease.HttpRequest)">
+            <summary>
+            	Create an <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> from the request's registered formatters.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	An <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> representing the formatter collection.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.FormatterResponseExtensions">
+            <summary>
+            	Extension methods for the <see cref="T:System.Net.Http.HttpResponseMessage"/>s returned asynchronously by invocation of <see cref="T:HTTPlease.HttpRequest"/>s by <see cref="T:System.Net.Http.HttpClient"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},HTTPlease.Formatters.IInputFormatter,System.Net.HttpStatusCode[])">
+             <summary>
+            		Asynchronously read the response body as the specified type using a specific content formatter.
+             </summary>
+             <typeparam name="TBody">
+            		The CLR type into which the body content will be deserialised.
+             </typeparam>
+             <param name="response">
+            		The asynchronous response.
+             </param>
+             <param name="formatter">
+            		A <see cref="T:HTTPlease.Formatters.IInputFormatter"/> that will be used to read the response body.
+             </param>
+             <param name="expectedStatusCodes">
+            		Optional <see cref="T:System.Net.HttpStatusCode"/>s that are expected and should therefore not prevent the response from being deserialised.
+            
+            		If not specified, then the standard behaviour provided by <see cref="M:System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode"/> is used.
+             </param>
+             <returns>
+            		The deserialised response body.
+             </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},HTTPlease.Formatters.IFormatterCollection,System.Net.HttpStatusCode[])">
+             <summary>
+            		Asynchronously read the response body as the specified type, selecting the most appropriate content formatter.
+             </summary>
+             <typeparam name="TBody">
+            		The CLR type into which the body content will be deserialised.
+             </typeparam>
+             <param name="response">
+            		The asynchronous response.
+             </param>
+             <param name="formatters">
+            		The <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> that will be used to select an appropriate content formatter for reading the response body.
+             </param>
+             <param name="expectedStatusCodes">
+            		Optional <see cref="T:System.Net.HttpStatusCode"/>s that are expected and should therefore not prevent the response from being deserialised.
+            
+            		If not specified, then the standard behaviour provided by <see cref="M:System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode"/> is used.
+             </param>
+             <returns>
+            		The deserialised response body.
+             </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},System.Net.HttpStatusCode[])">
+             <summary>
+            		Asynchronously read the response body as the specified type using a specific content formatter.
+             </summary>
+             <typeparam name="TBody">
+            		The CLR type into which the body content will be deserialised.
+             </typeparam>
+             <param name="response">
+            		The asynchronous response.
+             </param>
+             <param name="expectedStatusCodes">
+            		Optional <see cref="T:System.Net.HttpStatusCode"/>s that are expected and should therefore not prevent the response from being deserialised.
+            
+            		If not specified, then the standard behaviour provided by <see cref="M:System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode"/> is used.
+             </param>
+             <returns>
+            		The deserialised response body.
+             </returns>
+             <exception cref="T:System.InvalidOperationException">
+            		No content formatters were configured for the request that generated the response message.
+            
+            		Consider using the overload of ReadAsAsync that takes a specific <see cref="T:HTTPlease.Formatters.IInputFormatter"/>.
+             </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},HTTPlease.Formatters.IInputFormatter,System.Func{``0},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IInputFormatter"/> that will be used to read the response body.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TBody"/> in the event that the response status code is not valid.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},HTTPlease.Formatters.IInputFormatter,System.Func{System.Net.Http.HttpResponseMessage,``0},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IInputFormatter"/> that will be used to read the response body.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TBody"/> in the event that the response status code is not valid.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},System.Func{``0},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type, selecting the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TBody"/> in the event that the response status code is not valid.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},System.Func{System.Net.Http.HttpResponseMessage,``0},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type, selecting the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TBody"/> in the event that the response status code is not valid.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``2(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type using the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <typeparam name="TError">
+            	The CLR type that will be returned in the event that the response status code is unexpected or does not represent success.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+            <exception cref="T:HTTPlease.HttpRequestException`1">
+            	The response status code was unexpected or did not represent success.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            	No formatters were configured for the request, or an appropriate formatter could not be found in the request's list of formatters.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``2(System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage},HTTPlease.Formatters.IInputFormatter,System.Func{System.Net.Http.HttpResponseMessage,``1},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type using the specified formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <typeparam name="TError">
+            	The CLR type that will be returned in the event that the response status code is unexpected or does not represent success.
+            </typeparam>
+            <param name="response">
+            	The asynchronous response.
+            </param>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IInputFormatter"/> that will be used to read the response body.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TError"/> in the event that the response status code is unexpected or does not represent success.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+            <exception cref="T:HTTPlease.HttpRequestException`1">
+            	The response status code was unexpected or did not represent success.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.HasBody(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Determine if the response has body content.
+            </summary>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <returns>
+            	<c>true</c>, if the response has a non-zero content length.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.EnsureHasBody(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Ensure that the response has body content.
+            </summary>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <returns>
+            	The response message (enables inline use).
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Deserialise the response message's content into the specified CLR data type using the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data type into which the body will be deserialised.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <returns>
+            	The deserialised message body.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	No formatters were configured for the request, or an appropriate formatter could not be found in the request's list of formatters.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Net.Http.HttpResponseMessage,HTTPlease.Formatters.IFormatterCollection)">
+            <summary>
+            	Deserialise the response message's content into the specified CLR data type using the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data type into which the body will be deserialised.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <param name="formatters">
+            	The collection of content formatters from which to select an appropriate formatter.
+            </param>
+            <returns>
+            	The deserialised message body.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	An appropriate formatter could not be found in the request's list of formatters.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Net.Http.HttpResponseMessage,HTTPlease.Formatters.IInputFormatter)">
+            <summary>
+            	Deserialise the response message's body content into the specified CLR data type using the specified formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data type into which the body content will be deserialised.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <param name="formatter">
+            	The content formatter that will be used to deserialise the body content.
+            </param>
+            <returns>
+            	The deserialised message body.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``1(System.Net.Http.HttpResponseMessage,HTTPlease.Formatters.IInputFormatter,HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Deserialise the response message's body content into the specified CLR data type using the specified formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR data type into which the body content will be deserialised.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <param name="formatter">
+            	The content formatter that will be used to deserialise the body content.
+            </param>
+            <param name="formatterContext">
+            	Contextual information for the formatter about the body content.
+            </param>
+            <returns>
+            	The deserialised message body.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	An appropriate formatter could not be found in the request's list of formatters.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``2(System.Net.Http.HttpResponseMessage,System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type using the most appropriate formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <typeparam name="TError">
+            	The CLR type that will be returned in the event that the response status code is unexpected or does not represent success.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+            <exception cref="T:HTTPlease.HttpRequestException`1">
+            	The response status code was unexpected or did not represent success.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            	No formatters were configured for the request, or an appropriate formatter could not be found in the request's list of formatters.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.FormatterResponseExtensions.ReadContentAsAsync``2(System.Net.Http.HttpResponseMessage,HTTPlease.Formatters.IInputFormatter,System.Func{System.Net.Http.HttpResponseMessage,``1},System.Net.HttpStatusCode[])">
+            <summary>
+            	Asynchronously read the response body as the specified type using the specified formatter.
+            </summary>
+            <typeparam name="TBody">
+            	The CLR type into which the body content will be deserialised.
+            </typeparam>
+            <typeparam name="TError">
+            	The CLR type that will be returned in the event that the response status code is unexpected or does not represent success.
+            </typeparam>
+            <param name="responseMessage">
+            	The response message.
+            </param>
+            <param name="formatter">
+            	The <see cref="T:HTTPlease.Formatters.IInputFormatter"/> that will be used to read the response body.
+            </param>
+            <param name="onFailureResponse">
+            	A delegate that is called to get a <typeparamref name="TError"/> in the event that the response status code is unexpected or does not represent success.
+            </param>
+            <param name="successStatusCodes">
+            	Optional <see cref="T:System.Net.HttpStatusCode"/>s that should be treated as representing a successful response.
+            </param>
+            <returns>
+            	The deserialised body.
+            </returns>
+            <exception cref="T:HTTPlease.HttpRequestException`1">
+            	The response status code was unexpected or did not represent success.
+            </exception>
+        </member>
+        <member name="T:HTTPlease.FormatterTypedRequestExtensions">
+            <summary>
+            	Extension methods for working with <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.BuildRequestMessage``1(HTTPlease.HttpRequest{``0},System.Net.Http.HttpMethod,``0,System.Object,System.String,System.Uri)">
+            <summary>
+            	Build an HTTP request message, selecting an appropriate content formatter to serialise its body content.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="httpMethod">
+            	The HTTP request method.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance to use as a context for resolving deferred template parameters.
+            </param>
+            <param name="bodyContent">
+            	The request body content.
+            </param>
+            <param name="mediaType">
+            	The request body media type to use.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.BuildRequestMessage``1(HTTPlease.HttpRequest{``0},System.Net.Http.HttpMethod,``0,System.Object,System.String,System.Text.Encoding,System.Uri)">
+            <summary>
+            	Build an HTTP request message, selecting an appropriate content formatter to serialise its body content.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="httpMethod">
+            	The HTTP request method.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance to use as a context for resolving deferred template parameters.
+            </param>
+            <param name="bodyContent">
+            	The request body content.
+            </param>
+            <param name="mediaType">
+            	The request body media type to use.
+            </param>
+            <param name="encoding">
+            	The request body encoding to use.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.WithFormatter``1(HTTPlease.HttpRequest{``0},HTTPlease.Formatters.IFormatter)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, adding the specified content formatter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="formatter">
+            	The content formatter to add.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.WithoutFormatter``1(HTTPlease.HttpRequest{``0},System.Type)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, adding the specified content formatter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="formatterType">
+            	The type of content formatter to remove.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.GetFormatters``1(HTTPlease.HttpRequest{``0})">
+            <summary>
+            	Get the collection formatters used by the <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	An immutable dictionary of formatters, keyed by type.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterTypedRequestExtensions.CreateFormatterCollection``1(HTTPlease.HttpRequest{``0})">
+            <summary>
+            	Create an <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> from the request's registered formatters.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <returns>
+            	An <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> representing the formatter collection.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.FormatterMessageExtensions">
+            <summary>
+            	Formatter-related extension methods for <see cref="T:System.Net.Http.HttpRequestMessage"/> / <see cref="T:System.Net.Http.HttpResponseMessage"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FormatterMessageExtensions.GetFormatters(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Get the message's <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> (if any).
+            </summary>
+            <param name="message">
+            	The HTTP request message.
+            </param>
+            <returns>
+            	The content formatters, or <c>null</c> if the message does not have any associated formatters.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.FormatterMessageExtensions.GetFormatters(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Get the message's <see cref="T:HTTPlease.Formatters.IFormatterCollection"/> (if any).
+            </summary>
+            <param name="message">
+            	The HTTP request message.
+            </param>
+            <returns>
+            	The content formatters, or <c>null</c> if the message does not have any associated formatters.
+            </returns>
+            <remarks>
+            	Can only be called on an <see cref="T:System.Net.Http.HttpResponseMessage"/> whose <see cref="P:System.Net.Http.HttpResponseMessage.RequestMessage"/> contains a valid <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.FormatterMessageExtensions.SetFormatters(System.Net.Http.HttpRequestMessage,HTTPlease.Formatters.IFormatterCollection)">
+            <summary>
+            	Set the message's <see cref="T:HTTPlease.Formatters.IFormatterCollection"/>.
+            </summary>
+            <param name="message">
+            	The HTTP request message.
+            </param>
+            <param name="contentFormatters">
+            	The content formatters (if any).
+            </param>
+        </member>
+    </members>
+</doc>

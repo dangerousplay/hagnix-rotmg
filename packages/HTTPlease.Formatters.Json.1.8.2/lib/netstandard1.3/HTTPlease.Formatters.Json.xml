@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HTTPlease.Formatters.Json</name>
+    </assembly>
+    <members>
+        <member name="T:HTTPlease.Formatters.Json.JsonFormatter">
+            <summary>
+            	Content formatter for JSON.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatter.#ctor">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Formatters.Json.JsonFormatter"/>.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.Json.JsonFormatter.SerializerSettings">
+            <summary>
+            	Settings for the JSON serialiser.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Formatters.Json.JsonFormatter.SupportedMediaTypes">
+            <summary>
+            	Content types supported by the formatter.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatter.CanRead(HTTPlease.Formatters.InputFormatterContext)">
+            <summary>
+            	Determine whether the formatter can deserialise the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter can deserialise the data; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatter.CanWrite(HTTPlease.Formatters.OutputFormatterContext)">
+            <summary>
+            	Determine whether the formatter can serialise the specified data.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being serialised.
+            </param>
+            <returns>
+            	<c>true</c>, if the formatter can serialise the data; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatter.ReadAsync(HTTPlease.Formatters.InputFormatterContext,System.IO.Stream)">
+            <summary>
+            	Asynchronously deserialise data from an input stream.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <param name="stream">
+            	The input stream from which to read serialised data.
+            </param>
+            <returns>
+            	The deserialised object.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatter.WriteAsync(HTTPlease.Formatters.OutputFormatterContext,System.IO.Stream)">
+            <summary>
+            	Asynchronously serialise data to an output stream.
+            </summary>
+            <param name="context">
+            	Contextual information about the data being deserialised.
+            </param>
+            <param name="stream">
+            	The output stream to which the serialised data will be written.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Formatters.Json.JsonFormatterTypedFactoryExtensions">
+            <summary>
+            	JSON request extension methods for <see cref="T:HTTPlease.HttpRequestFactory`1"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatterTypedFactoryExtensions.Json``1(HTTPlease.HttpRequestFactory{``0},System.String)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Formatters.Json.JsonFormatterTypedFactoryExtensions.Json``1(HTTPlease.HttpRequestFactory{``0},System.Uri)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.JsonFormatterExtensions">
+            <summary>
+            	Extension methods for content formatters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterExtensions.AddJsonFormatter(HTTPlease.Formatters.IFormatterCollection,Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            	Add the JSON content formatter.
+            </summary>
+            <param name="formatters">
+            	The content formatter collection.
+            </param>
+            <param name="serializerSettings">
+            	Optional settings for the JSON serialiser.
+            </param>
+            <returns>
+            	The content formatter collection (enables method-chaining).
+            </returns>
+        </member>
+        <member name="T:HTTPlease.JsonFormatterFactoryExtensions">
+            <summary>
+            	JSON request extension methods for <see cref="T:HTTPlease.HttpRequestFactory"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterFactoryExtensions.Json(HTTPlease.HttpRequestFactory,System.String)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterFactoryExtensions.Json(HTTPlease.HttpRequestFactory,System.String,Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <param name="serializerSettings">
+            	The JSON serialiser settings used by the <see cref="T:HTTPlease.Formatters.Json.JsonFormatter"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterFactoryExtensions.Json(HTTPlease.HttpRequestFactory,System.Uri)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterFactoryExtensions.Json(HTTPlease.HttpRequestFactory,System.Uri,Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            	Create a new HTTP request that expects and uses JSON as its primary format.
+            </summary>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <param name="serializerSettings">
+            	The JSON serialiser settings used by the <see cref="T:HTTPlease.Formatters.Json.JsonFormatter"/>.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.JsonFormatterRequestExtensions">
+            <summary>
+            	Formatter-related extension methods for <see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterRequestExtensions.UseJson(HTTPlease.HttpRequest,Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest"/>, configuring it to only use the JSON formatters.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="serializerSettings">
+            	<see cref="T:Newtonsoft.Json.JsonSerializerSettings"/> used to configure the formatter's behaviour.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.JsonFormatterRequestExtensions.UseJson``1(HTTPlease.HttpRequest{``0},Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.HttpRequest`1"/>, configuring it to only use the JSON formatters.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </param>
+            <param name="serializerSettings">
+            	<see cref="T:Newtonsoft.Json.JsonSerializerSettings"/> used to configure the formatter's behaviour.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+    </members>
+</doc>

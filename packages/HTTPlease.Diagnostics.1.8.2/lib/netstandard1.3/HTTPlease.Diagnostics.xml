@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HTTPlease.Diagnostics</name>
+    </assembly>
+    <members>
+        <member name="T:HTTPlease.Diagnostics.ClientBuilderExtensions">
+            <summary>
+            	Extension methods for the <see cref="T:HTTPlease.ClientBuilder">HTTP client builder</see>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.ClientBuilderExtensions.WithLogging(HTTPlease.ClientBuilder,Microsoft.Extensions.Logging.ILogger,HTTPlease.Diagnostics.LogMessageComponents,HTTPlease.Diagnostics.LogMessageComponents)">
+            <summary>
+            	Create a copy of the HTTP client builder whose clients will log requests and responses to the specified logger.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="requestComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each request message should be logged.
+            </param>
+            <param name="responseComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each response message should be logged.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+            <remarks>
+            	This overload is for convenience only; for the purposes of reliability you should resolve the logger when you are creating the client (it's not good practice to share the same instance of a logger between multiple clients).
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.ClientBuilderExtensions.WithLogging(HTTPlease.ClientBuilder,System.Func{Microsoft.Extensions.Logging.ILogger},HTTPlease.Diagnostics.LogMessageComponents,HTTPlease.Diagnostics.LogMessageComponents)">
+            <summary>
+            	Create a copy of the HTTP client builder whose clients will log requests and responses to the specified logger.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="loggerFactory">
+            	A delegate that produces the logger for each client.
+            </param>
+            <param name="requestComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each request message should be logged.
+            </param>
+            <param name="responseComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each response message should be logged.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+            <remarks>
+            	Each call to <paramref name="loggerFactory"/> should return a new instance of the logger (it's not good practice to share the same instance of a logger between multiple clients).
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.Diagnostics.LogEventIds">
+            <summary>
+            	The Ids of well-known log events raised by HTTPlease diagnostics.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.BeginRequest">
+            <summary>
+            	An outgoing HTTP request is being performed. 
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.RequestBody">
+            <summary>
+            	The body of an outgoing HTTP request.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.ResponseBody">
+            <summary>
+            	The body of an incoming HTTP response.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.StreamedResponse">
+            <summary>
+            	The body of an incoming HTTP response is streamed.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.EndRequest">
+            <summary>
+            	An incoming HTTP response has been received.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogEventIds.RequestError">
+            <summary>
+            	An exception occurred while performing an HTTP request.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Diagnostics.LoggerExtensions">
+            <summary>
+            	Extension methods for <see cref="T:Microsoft.Extensions.Logging.ILogger"/> used to log messages about requests and responses.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.BeginRequest(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Log an event representing the start of an HTTP request.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="request">
+            	An <see cref="T:System.Net.Http.HttpRequestMessage"/> representing the request.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.RequestBody(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Asynchronously log an event representing the body of an HTTP request.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="request">
+            	An <see cref="T:System.Net.Http.HttpRequestMessage"/> representing the request.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.ResponseBody(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Asynchronously log an event representing the body of an HTTP response.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="response">
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </param>
+            <returns>
+            	A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.StreamedResponse(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Log an event representing the streamed body of an HTTP response.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="response">
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.EndRequest(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode)">
+            <summary>
+            	Log an event representing the completion of an HTTP request.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="request">
+            	An <see cref="T:System.Net.Http.HttpRequestMessage"/> representing the request.
+            </param>
+            <param name="statusCode">
+            	An <see cref="T:System.Net.HttpStatusCode"/> representing the response status code.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.LoggerExtensions.RequestError(Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpRequestMessage,System.Exception)">
+            <summary>
+            	Log an event representing an error encountered while performing an HTTP request.
+            </summary>
+            <param name="logger">
+            	The logger used to log the event.
+            </param>
+            <param name="request">
+            	An <see cref="T:System.Net.Http.HttpRequestMessage"/> representing the request.
+            </param>
+            <param name="error">
+            	An <see cref="T:System.Exception"/> representing the error.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Diagnostics.LogMessageComponents">
+            <summary>
+            	Components of an HTTP message that should be logged.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogMessageComponents.None">
+            <summary>
+            	No message components should be logged.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogMessageComponents.Basic">
+            <summary>
+            	Basic message components (e.g. method and request URI) should be logged.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogMessageComponents.Body">
+            <summary>
+            	Message body should be logged.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogMessageComponents.Headers">
+            <summary>
+            	Message headers should be logged.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Diagnostics.LogMessageComponents.All">
+            <summary>
+            	All message components should be logged.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler">
+            <summary>
+            	Client-side HTTP message handler that logs outgoing requests and incoming responses.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.#ctor(Microsoft.Extensions.Logging.ILogger,HTTPlease.Diagnostics.LogMessageComponents,HTTPlease.Diagnostics.LogMessageComponents)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler"/>.
+            </summary>
+            <param name="logger">
+            	The <see cref="T:Microsoft.Extensions.Logging.ILogger"/> used to log messages about requests and responses.
+            </param>
+            <param name="requestComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each request message should be logged.
+            </param>
+            <param name="responseComponents">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each response message should be logged.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.Log">
+            <summary>
+            	The <see cref="T:Microsoft.Extensions.Logging.ILogger"/> used to log messages about requests and responses.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.RequestComponents">
+            <summary>
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each request message should be logged.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.ResponseComponents">
+            <summary>
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value indicating which components of each response message should be logged.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously process an outgoing HTTP request message and its incoming response message.
+            </summary>
+            <param name="request">
+            	The <see cref="T:System.Net.Http.HttpRequestMessage"/> representing the outgoing request.
+            </param>
+            <param name="cancellationToken">
+            	A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	Create a new <see cref="T:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.ShouldLogRequest(HTTPlease.Diagnostics.LogMessageComponents)">
+            <summary>
+            	Determine whether the specified component of request messages should be logged.
+            </summary>
+            <param name="requestComponent">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value representing the message component.
+            </param>
+            <returns>
+            	<c>true</c>, if the message component should be logged; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Diagnostics.MessageHandlers.LoggingMessageHandler.ShouldLogResponse(HTTPlease.Diagnostics.LogMessageComponents)">
+            <summary>
+            	Determine whether the specified component of response messages should be logged.
+            </summary>
+            <param name="responseComponent">
+            	A <see cref="T:HTTPlease.Diagnostics.LogMessageComponents"/> value representing the message component.
+            </param>
+            <returns>
+            	<c>true</c>, if the message component should be logged; otherwise, <c>false</c>.
+            </returns>
+        </member>
+    </members>
+</doc>

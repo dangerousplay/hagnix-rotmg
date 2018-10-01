@@ -1,0 +1,4095 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HTTPlease.Core</name>
+    </assembly>
+    <members>
+        <member name="T:HTTPlease.ClientBuilder">
+            <summary>
+            	Builds <see cref="T:System.Net.Http.HttpClient"/>s with pipelines of <see cref="T:System.Net.Http.DelegatingHandler">HTTP message handler</see>s.
+            </summary>
+            <remarks>
+            	Be aware that, if you return singleton instances of message handlers from factory delegates, those handlers will be disposed if the factory encounters any exception while creating a client.
+            </remarks>
+        </member>
+        <member name="F:HTTPlease.ClientBuilder.DefaultMessagePipelineTerminus">
+            <summary>
+            	The default factory for message-pipeline terminus handlers.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.ClientBuilder._handlerFactories">
+            <summary>
+            	Factory delegates used to produce the HTTP message handlers that comprise client pipelines.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.ClientBuilder._pipelineTerminusConfigurators">
+            <summary>
+            	 Delegates to create or modify the <see cref="T:System.Net.Http.HttpMessageHandler"/> that will form the message pipeline terminus.
+            </summary>
+            <remarks>
+            	Each delegate is passed the result of the previous delegate (if any).
+            
+            	Can be overridden by the value passed to CreateClient.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.#ctor">
+            <summary>
+            	Create a new HTTP client builder.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.#ctor(HTTPlease.ClientBuilder)">
+            <summary>
+            	Create a new HTTP client builder.
+            </summary>
+            <param name="copyFrom">
+            	The HTTP client buider to copy configuration from.
+            </param>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.CreateClient(System.Uri,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            	Create an <see cref="T:System.Net.Http.HttpClient"/> using the configured message-handler pipeline.
+            </summary>
+            <param name="baseUri">
+            	An optional base URI for the <see cref="T:System.Net.Http.HttpClient"/>.
+            </param>
+            <param name="messagePipelineTerminus">
+            	An optional <see cref="T:System.Net.Http.HttpMessageHandler"/> that will form the message pipeline terminus.
+            
+            	If not specified, the pre-configured message pipeline terminus is used.
+            </param>
+            <returns>
+            	The new <see cref="T:System.Net.Http.HttpClient"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.WithMessagePipelineTerminus(System.Func{System.Net.Http.HttpMessageHandler,System.Net.Http.HttpMessageHandler})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but with the specified configuration for its message pipeline terminus.
+            </summary>
+            <param name="pipelineTerminusConfigurator">
+            	A delegate that creates the <see cref="T:System.Net.Http.HttpMessageHandler"/> for each <see cref="T:System.Net.Http.HttpClient"/> that will form its message pipeline terminus.
+            
+            	If <c>null</c>, the default message handler pipeline terminus will be used.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.WithMessagePipelineTerminus(System.Func{System.Net.Http.HttpMessageHandler})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but with the specified message pipeline terminus.
+            </summary>
+            <param name="pipelineTerminusFactory">
+            	A delegate that creates the <see cref="T:System.Net.Http.HttpMessageHandler"/> for each <see cref="T:System.Net.Http.HttpClient"/> that will form its message pipeline terminus.
+            
+            	If <c>null</c>, the default message handler pipeline terminus will be used.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.AddHandler``1(System.Func{``0})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, adding an HTTP message-handler factory to the end of the pipeline.
+            </summary>
+            <typeparam name="THandler">
+            	The handler type.
+            </typeparam>
+            <param name="handlerFactory">
+            	The message-handler factory.
+            </param>
+            <returns>
+            	The <see cref="T:HTTPlease.ClientBuilder"/> (enables method-chaining).
+            </returns>
+            <remarks>
+            	<typeparamref name="THandler"/> cannot be the <see cref="T:System.Net.Http.DelegatingHandler"/> base class.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.AddHandlerBefore``2(System.Func{``0},System.Boolean)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, inserting an HTTP message-handler factory to the pipeline before the factory that produces handlers of the specified type.
+            </summary>
+            <typeparam name="THandler">
+            	The handler type.
+            </typeparam>
+            <typeparam name="TBeforeHandler">
+            	The type of handler before whose factory the new handler factory should be inserted.
+            </typeparam>
+            <param name="handlerFactory">
+            	The message-handler factory.
+            </param>
+            <param name="throwIfNotPresent">
+            	Throw an <see cref="T:System.InvalidOperationException"/> if no factory for <typeparamref name="TBeforeHandler"/> is present?
+            
+            	Default is <c>false</c>.
+            </param>
+            <returns>
+            	The <see cref="T:HTTPlease.ClientBuilder"/> (enables method-chaining).
+            </returns>
+            <remarks>
+            	<typeparamref name="THandler"/> and <typeparamref name="TBeforeHandler"/> cannot be the <see cref="T:System.Net.Http.DelegatingHandler"/> base class.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.AddHandlerAfter``2(System.Func{``0},System.Boolean)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, inserting an HTTP message-handler factory to the pipeline after the factory that produces handlers of the specified type.
+            </summary>
+            <typeparam name="THandler">
+            	The handler type.
+            </typeparam>
+            <typeparam name="TAfterHandler">
+            	The type of handler after whose factory the new handler factory should be inserted.
+            </typeparam>
+            <param name="handlerFactory">
+            	The message-handler factory.
+            </param>
+            <param name="throwIfNotPresent">
+            	Throw an <see cref="T:System.InvalidOperationException"/> if no factory for <typeparamref name="TAfterHandler"/> is present?
+            
+            	Default is <c>false</c>.
+            </param>
+            <returns>
+            	The <see cref="T:HTTPlease.ClientBuilder"/> (enables method-chaining).
+            </returns>
+            <remarks>
+            	<typeparamref name="THandler"/> and <typeparamref name="TAfterHandler"/> cannot be the <see cref="T:System.Net.Http.DelegatingHandler"/> base class.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.EnumerateHandlerTypes">
+            <summary>
+            	Enumerate the types of handlers configured in the factory's pipeline.
+            </summary>
+            <returns>
+            	A sequence of 0 or more types.
+            </returns>
+            <remarks>
+            	This operation uses Reflection, so it can be relatively expensive; use sparingly.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.CreatePipeline(System.Net.Http.HttpMessageHandler,System.Collections.Generic.IEnumerable{System.Net.Http.DelegatingHandler})">
+            <summary>
+            	Create an HTTP message-handler pipeline.
+            </summary>
+            <param name="pipelineTerminus">
+            	An <see cref="T:System.Net.Http.HttpMessageHandler"/> representing the terminus of the pipeline.
+            </param>
+            <param name="pipelineHandlers">
+            	A sequence of <see cref="T:System.Net.Http.DelegatingHandler"/>s representing additional steps in the pipeline.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpMessageHandler"/> representing the head of the pipeline.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilder.BuildMessagePipelineTerminus">
+            <summary>
+            	Build / configure an HTTP message handler to act as the message pipeline terminus.
+            </summary>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpMessageHandler"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.ClientBuilderExtensions">
+            <summary>
+            	General-purpose extensions for <see cref="T:HTTPlease.ClientBuilder"/>.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.ClientBuilderExtensions.DelegatingHandlerType">
+            <summary>
+            	The <see cref="T:System.Net.Http.DelegatingHandler"/> CLR type.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.CreateClient(HTTPlease.ClientBuilder,System.Uri,System.Net.ICredentials)">
+            <summary>
+            	Create a new <see cref="T:System.Net.Http.HttpClient"/>.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="baseUri">
+            	The base URI for the HTTP client.
+            </param>
+            <param name="credentials">
+            	The client credentials used for authentication.
+            </param>
+            <returns>
+            	The new <see cref="T:System.Net.Http.HttpClient"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.CreateClient(HTTPlease.ClientBuilder,System.String,System.Net.ICredentials)">
+            <summary>
+            	Create a new <see cref="T:System.Net.Http.HttpClient"/>.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="baseUri">
+            	The base URI for the HTTP client.
+            </param>
+            <param name="credentials">
+            	The client credentials used for authentication.
+            </param>
+            <returns>
+            	The new <see cref="T:System.Net.Http.HttpClient"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.CreateClient(HTTPlease.ClientBuilder,System.String,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            	Create a new <see cref="T:System.Net.Http.HttpClient"/>.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="baseUri">
+            	The base URI for the HTTP client.
+            </param>
+            <param name="messagePipelineTerminus">
+            	An optional <see cref="T:System.Net.Http.HttpMessageHandler"/> that will form the message pipeline terminus.
+            
+            	If not specified, a new <see cref="T:System.Net.Http.HttpClientHandler"/> is used.
+            </param>
+            <returns>
+            	The new <see cref="T:System.Net.Http.HttpClient"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.WithMessageHandler``1(HTTPlease.ClientBuilder)">
+            <summary>
+            	Register a message handler type for the pipeline used by clients created by the factory.
+            </summary>
+            <typeparam name="TMessageHandler">
+            	The message handler type.
+            
+            	Must be a sub-type of <see cref="T:System.Net.Http.DelegatingHandler"/> (not <see cref="T:System.Net.Http.DelegatingHandler"/> itself).
+            </typeparam>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <returns>
+            	The client factory (enables inline use / method chaining).
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.ConfigureHttpClientHandler(HTTPlease.ClientBuilder,System.Action{System.Net.Http.HttpClientHandler})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but with the specified configuration action for its <see cref="T:System.Net.Http.HttpClientHandler"/> (message pipeline terminus).
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="clientHandlerConfigurator">
+            	A delegate that configures the <see cref="T:System.Net.Http.HttpClientHandler"/> that will form the message pipeline terminus for each <see cref="T:System.Net.Http.HttpClient"/> produced by the builder.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.ConfigureMessagePipelineTerminus``1(HTTPlease.ClientBuilder,System.Action{``0})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but with the specified configuration action for its message pipeline terminus.
+            </summary>
+            <typeparam name="TMessageHandler">
+            	The type of message handler to expect / configure.
+            </typeparam>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="pipelineTerminusConfigurator">
+            	A delegate that configures the <typeparamref name="TMessageHandler"/> that will form the message pipeline terminus for each <see cref="T:System.Net.Http.HttpClient"/> produced by the builder.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.WithClientCertificate(HTTPlease.ClientBuilder,System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but using the specified X.509 certificate for client authentication.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="clientCertificate">
+            	The X.509 certificate to use.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.WithServerCertificate(HTTPlease.ClientBuilder,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Action{System.Exception})">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but using the specified X.509 certificate for server authentication.
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <param name="expectServerCertificate">
+            	The X.509 certificate to expect the server to use.
+            </param>
+            <param name="logError">
+            	An optional delegate called if an unexpected error is encountered while validating the server certificate.
+            
+            	Use this delegate to log the error.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+            <remarks>
+            	Will accept the certificate or (if it's a CA certificate) any certificate issued by it.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.ClientBuilderExtensions.AcceptAnyServerCertificate(HTTPlease.ClientBuilder)">
+            <summary>
+            	Create a copy of the <see cref="T:HTTPlease.ClientBuilder"/>, but with verification of the server's SSL certificate disabled (useful when the server has a self-signed certificate).
+            </summary>
+            <param name="clientBuilder">
+            	The HTTP client builder.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.ClientBuilder"/>.
+            </returns>
+            <remarks>
+            	Will accept any certificate.
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.ClientExtensions">
+            <summary>
+            	Invocation-related extension methods for <see cref="T:System.Net.Http.HttpClient"/>s that use an <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+            <summary>
+            	Invocation-related extension methods for <see cref="T:System.Net.Http.HttpClient"/>s that use an <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.HeadAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP HEAD.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.GetAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP GET.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.PostAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP POST.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="postBody">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.PutAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PUT.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="putBody">
+            	<see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.PatchAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PATCH.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="patchBody">
+            	<see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.DeleteAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP DELETE.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.SendAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Net.Http.HttpMethod,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute the request using the specified HTTP method.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="method">
+            	An <see cref="T:System.Net.Http.HttpMethod"/> representing the method to use.
+            </param>
+            <param name="body">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body (if any).
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.ExecuteResponseActions(HTTPlease.HttpRequest,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            	Execute the request's configured response actions (if any) against the specified response message.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="responseMessage">
+            	The HTTP response message.
+            </param>
+        </member>
+        <member name="M:HTTPlease.ClientExtensions.GetStreamedAsync(System.Net.Http.HttpClient,HTTPlease.HttpRequest,System.Threading.CancellationToken)">
+            <summary>
+                Asynchronously execute a request as a streamed HTTP GET.
+            </summary>
+            <param name="httpClient">
+                The HTTP client.
+            </param>
+            <param name="request">
+                The <see cref="T:HTTPlease.HttpRequest"/> to execute.
+            </param>
+            <param name="cancellationToken">
+                An optional <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the request.
+            </param>
+            <returns>
+                An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.HttpRequestBase">
+            <summary>
+            	The base class for HTTP request templates.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.HttpRequestBase._properties">
+            <summary>
+            	The request properties.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.#ctor(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new HTTP request.
+            </summary>
+            <param name="properties">
+            	The request properties.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.HttpRequestBase.Uri">
+            <summary>
+            	The request URI.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Core.HttpRequestBase.IsUriTemplate">
+            <summary>
+            	Is the request URI a template?
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Core.HttpRequestBase.Properties">
+            <summary>
+            	All properties for the request.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.HaveProperty(System.String)">
+            <summary>
+            	Determine whether the specified property is defined for the request.
+            </summary>
+            <param name="propertyName">
+            	The property name.
+            </param>
+            <returns>
+            	<c>true</c>, if the request is defined; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.GetProperty``1(System.String)">
+            <summary>
+            	Get the specified request property.
+            </summary>
+            <typeparam name="TProperty">
+            	The type of property to retrieve.
+            </typeparam>
+            <param name="propertyName">
+            	The name of the property to retrieve.
+            </param>
+            <returns>
+            	The property value.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+            	<paramref name="propertyName"/> is null, empty, or entirely composed of whitespace.
+            </exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            	The specified property is not defined.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.GetOptionalProperty``1(System.String,``0)">
+            <summary>
+            	Get the specified request property.
+            </summary>
+            <typeparam name="TProperty">
+            	The type of property to retrieve.
+            </typeparam>
+            <param name="propertyName">
+            	The name of the property to retrieve.
+            </param>
+            <param name="defaultValue">
+            	The default value to return if the property is not defined.
+            </param>
+            <returns>
+            	The property value, or the default value if the property is not defined.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+            	<paramref name="propertyName"/> is null, empty, or entirely composed of whitespace.
+            </exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            	The specified property is not defined.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.EnsurePropertyType``1(System.String)">
+            <summary>
+            	Ensure that the specified property (if defined) is of the correct type.
+            </summary>
+            <typeparam name="TProperty">
+            	The expected property type.
+            </typeparam>
+            <param name="propertyName">
+            	The name of the property to validate.
+            </param>
+            <exception cref="T:System.ArgumentException">
+            	<paramref name="propertyName"/> is null, empty, or entirely composed of whitespace.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.CloneProperties(System.Action{System.Collections.Immutable.ImmutableDictionary{System.String,System.Object}.Builder})">
+            <summary>
+            	Clone the request properties, but with the specified changes.
+            </summary>
+            <param name="modifications">
+            	A delegate that modifies the request properties.
+            </param>
+            <returns>
+            	The cloned request properties.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.Clone(System.Action{System.Collections.Generic.IDictionary{System.String,System.Object}})">
+            <summary>
+            	Clone the request.
+            </summary>
+            <param name="modifications">
+            	A delegate that performs modifications to the request properties.
+            </param>
+            <returns>
+            	The cloned request.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.CreateInstance(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new instance of the HTTP request using the specified properties.
+            </summary>
+            <param name="requestProperties">
+            	The request properties.
+            </param>
+            <returns>
+            	The new HTTP request instance.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.HttpRequestBase.ToString">
+            <summary>
+            	Convert the HTTP request to a textual representation.
+            </summary>
+            <returns>
+            	The textual representation.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.RequestAction">
+            <summary>
+            	Delegate that performs configuration of an outgoing HTTP request message.
+            </summary>
+            <param name="requestMessage">
+            	The outgoing request message.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Core.RequestAction`1">
+            <summary>
+            	Delegate that performs configuration of an outgoing HTTP request message.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred parameters.
+            </typeparam>
+            <param name="requestMessage">
+            	The outgoing request message.
+            </param>
+            <param name="context">
+            	The object used by the request when resolving deferred parameters.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Core.ResponseAction">
+            <summary>
+            	Delegate that performs processing of an incoming HTTP response message.
+            </summary>
+            <param name="responseMessage">
+            	The incoming response message.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Core.ResponseAction`1">
+            <summary>
+            	Delegate that performs processing of an incoming HTTP response message.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the response when resolving deferred parameters.
+            </typeparam>
+            <param name="responseMessage">
+            	The incoming response message.
+            </param>
+            <param name="context">
+            	The object used by the response when resolving deferred parameters.
+            </param>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.ITemplateEvaluationContext">
+            <summary>
+            	Represents the evaluation context for a URI template.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.ITemplateEvaluationContext.IsParameterDefined(System.String)">
+            <summary>
+            	Determine whether the specified parameter is defined.
+            </summary>
+            <param name="parameterName">
+            	The parameter name.
+            </param>
+            <returns>
+            	<c>true</c>, if the parameter is defined; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ITemplateEvaluationContext.Item(System.String,System.Boolean)">
+            <summary>
+            	The value of the specified template parameter
+            </summary>
+            <param name="parameterName">
+            	The name of the template parameter.
+            </param>
+            <param name="isOptional">
+            	Is the parameter optional? If so, return <c>null</c> if it is not present, rather than throwing an exception.
+            
+            	Default is <c>true</c>.
+            </param>
+            <returns>
+            	The parameter value, or <c>null</c>.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+            	<paramref name="parameterName"/> is <c>null</c>, empty, or entirely composed of whitespace.
+            </exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            	The parameter is not <paramref name="isOptional"/>, and is not preset.
+            </exception>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.LiteralQuerySegment">
+            <summary>
+            	A template segment that represents a literal query parameter (i.e. one that has a constant value).
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.LiteralQuerySegment._queryParameterValue">
+            <summary>
+            	The value for the query parameter that the segment represents.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.LiteralQuerySegment.#ctor(System.String,System.String)">
+            <summary>
+            	Create a new literal query segment.
+            </summary>
+            <param name="queryParameterName">
+            	The name of the query parameter that the segment represents.
+            </param>
+            <param name="queryParameterValue">
+            	The value for the query parameter that the segment represents.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.LiteralQuerySegment.QueryParameterValue">
+            <summary>
+            	The value for the query parameter that the segment represents.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.LiteralQuerySegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment has no value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.LiteralUriSegment">
+            <summary>
+            	Represents a literal URI segment (i.e. one that has a constant value).
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.LiteralUriSegment._value">
+            <summary>
+            	The segment value;
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.LiteralUriSegment.#ctor(System.String,System.Boolean)">
+            <summary>
+            	Create a new literal URI segment.
+            </summary>
+            <param name="value">
+            	The segment value.
+            </param>
+            <param name="isDirectory">
+            	Does the segment represent a directory (i.e. have a trailing slash?).
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.LiteralUriSegment.Value">
+            <summary>
+            	The segment value;
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.LiteralUriSegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment is missing.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.ParameterizedQuerySegment">
+            <summary>
+            	A template segment that represents a query parameter whose value comes from a template parameter.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.ParameterizedQuerySegment._templateParameterName">
+            <summary>
+            	The name of the template parameter whose value becomes the query parameter.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.ParameterizedQuerySegment._isOptional">
+            <summary>
+            	Is the segment optional?
+            </summary>
+            <remarks>
+            	If <c>true</c>, then the query parameter will be omitted if its associated template variable is not defined.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.ParameterizedQuerySegment.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            	Create a new literal query segment.
+            </summary>
+            <param name="queryParameterName">
+            	The name of the query parameter that the segment represents.
+            </param>
+            <param name="templateParameterName">
+            	The value for the query parameter that the segment represents.
+            </param>
+            <param name="isOptional">
+            	Is the segment optional?
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedQuerySegment.TemplateParameterName">
+            <summary>
+            	The name of the template parameter whose value becomes the query parameter.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedQuerySegment.IsOptional">
+            <summary>
+            	Is the segment optional?
+            </summary>
+            <remarks>
+            	If <c>true</c>, then the query parameter will be omitted if its associated template variable is not defined.
+            </remarks>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedQuerySegment.IsParameterized">
+            <summary>
+            	Does the segment have a parameterised (non-constant) value?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.ParameterizedQuerySegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment has no value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.ParameterizedUriSegment">
+            <summary>
+            	Represents a literal URI segment (i.e. one that has a constant value).
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.ParameterizedUriSegment._templateParameterName">
+            <summary>
+            	The name of the parameter from which the URI segment obtains its value.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.ParameterizedUriSegment._isOptional">
+            <summary>
+            	Is the segment optional?
+            </summary>
+            <remarks>
+            	If <c>true</c>, then the segment is not rendered when its associated parameter is missing.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.ParameterizedUriSegment.#ctor(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            	Create a new literal URI segment.
+            </summary>
+            <param name="templateParameterName">
+            	The name of the parameter from which the URI segment obtains its value.
+            </param>
+            <param name="isDirectory">
+            	Does the segment represent a directory (i.e. have a trailing slash?).
+            </param>
+            <param name="isOptional">
+            	Is the segment optional?
+            
+            	Default is <c>false</c>.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedUriSegment.TemplateParameterName">
+            <summary>
+            	The name of the parameter from which the URI segment obtains its value.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedUriSegment.IsOptional">
+            <summary>
+            	Is the segment optional?
+            </summary>
+            <remarks>
+            	If <c>true</c>, then the segment is not rendered when its associated parameter is missing.
+            </remarks>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.ParameterizedUriSegment.IsParameterized">
+            <summary>
+            	Does the segment have a parameterised (non-constant) value?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.ParameterizedUriSegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment is missing.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.QuerySegment">
+            <summary>
+            	The base class for template segments that represent components of a URI's query.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.QuerySegment._queryParameterName">
+            <summary>
+            	The name of the query parameter that the segment represents.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.QuerySegment.#ctor(System.String)">
+            <summary>
+            	Create a new query segment.
+            </summary>
+            <param name="queryParameterName">
+            	The name of the query parameter that the segment represents.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.QuerySegment.QueryParameterName">
+            <summary>
+            	The name of the query parameter that the segment represents.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.RootUriSegment">
+            <summary>
+            	A literal URI segment representing the root folder ("/").
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.RootUriSegment.Instance">
+            <summary>
+            	The singleton instance of the root URI segment.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.RootUriSegment.#ctor">
+            <summary>
+            	Create a new literal URI segment.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.RootUriSegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment is missing.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.TemplateEvaluationContext">
+            <summary>
+            	The default evaluation context for a URI template.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.TemplateEvaluationContext._templateParameters">
+            <summary>
+            	The template parameters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateEvaluationContext.#ctor">
+            <summary>
+            	Create a new template evaluation context.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateEvaluationContext.#ctor(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            	Create a new template evaluation context.
+            </summary>
+            <param name="templateParameters">
+            	A dictionary of template parameters (and their values) used to populate the evaluation context.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.TemplateEvaluationContext.TemplateParameters">
+            <summary>
+            	The template parameters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateEvaluationContext.IsParameterDefined(System.String)">
+            <summary>
+            	Determine whether the specified parameter is defined.
+            </summary>
+            <param name="parameterName">
+            	The parameter name.
+            </param>
+            <returns>
+            	<c>true</c>, if the parameter is defined; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.TemplateEvaluationContext.Item(System.String,System.Boolean)">
+            <summary>
+            	The value of the specified template parameter
+            </summary>
+            <param name="parameterName">
+            	The name of the template parameter.
+            </param>
+            <param name="isOptional">
+            	Is the parameter optional? If so, return <c>null</c> if it is not present, rather than throwing an exception.
+            
+            	Default is <c>true</c>.
+            </param>
+            <returns>
+            	The parameter value, or <c>null</c>.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+            	<paramref name="parameterName"/> is <c>null</c>, empty, or entirely composed of whitespace.
+            </exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            	The parameter is not <paramref name="isOptional"/>, and is not preset.
+            </exception>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.TemplateSegment">
+            <summary>
+            	The base class for the segments that comprise a URI template.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.TemplateSegment.VariableRegex">
+            <summary>
+            	The regular expression used to match variables.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateSegment.#ctor">
+            <summary>
+            	Create a new URI template segment.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.TemplateSegment.IsParameterized">
+            <summary>
+            	Does the segment have a parameterised (non-constant) value?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateSegment.GetValue(HTTPlease.Core.Templates.ITemplateEvaluationContext)">
+            <summary>
+            	Get the value of the segment (if any).
+            </summary>
+            <param name="evaluationContext">
+            	The current template evaluation context.
+            </param>
+            <returns>
+            	The segment value, or <c>null</c> if the segment has no value.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateSegment.Parse(System.String)">
+            <summary>
+            	Parse the specified URI into template segments.
+            </summary>
+            <param name="template">
+            	The URI to parse.
+            </param>
+            <returns>
+            	The template segments.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateSegment.ParsePathSegments(System.Uri)">
+            <summary>
+            	Parse URI segments from the specified template.
+            </summary>
+            <param name="template">
+            	The URI template.
+            </param>
+            <returns>
+            	A sequence of 0 or more URI segments.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.TemplateSegment.ParseQuerySegments(System.Uri)">
+            <summary>
+            	Parse query segments from the specified template.
+            </summary>
+            <param name="template">
+            	The URI template.
+            </param>
+            <returns>
+            	A sequence of 0 or more query segments.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Templates.UriSegment">
+            <summary>
+            	The base class for URI template segments that represent segments of the URI.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Templates.UriSegment._isDirectory">
+            <summary>
+            	Does the segment represent a directory (i.e. have a trailing slash?).
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Templates.UriSegment.#ctor(System.Boolean)">
+            <summary>
+            	Create a new URI segment.
+            </summary>
+            <param name="isDirectory">
+            	Does the segment represent a directory (i.e. have a trailing slash?).
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Templates.UriSegment.IsDirectory">
+            <summary>
+            	Does the segment represent a directory (i.e. have a trailing slash?).
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Core.Utilities.DisposableObject">
+            <summary>
+            	A base class for disposable objects.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Utilities.DisposableObject._isDisposing">
+            <summary>
+            	Is the object being disposed?
+            </summary>
+            <remarks>
+            	1, if the object is being disposed; otherwise, 0.
+            </remarks>
+        </member>
+        <member name="F:HTTPlease.Core.Utilities.DisposableObject._isDisposed">
+            <summary>
+            	Has the object been disposed?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.#ctor">
+            <summary>
+            	Create a new disposable object.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.Finalize">
+            <summary>
+            	Finaliser for <see cref="T:HTTPlease.Core.Utilities.DisposableObject"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.Dispose">
+            <summary>
+            	Dispose of resources being used by the object.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.Dispose(System.Boolean)">
+            <summary>
+            	Dispose of resources being used by the object.
+            </summary>
+            <param name="disposing">
+            	Explicit disposal?
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.Utilities.DisposableObject.IsDisposed">
+            <summary>
+            	Has the object been disposed?
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.CheckDisposed">
+            <summary>
+            	Check if the object has been disposed.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            	The object has been disposed.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposableObject.IsObjectDisposed(HTTPlease.Core.Utilities.DisposableObject)">
+            <summary>
+            	Determine if a <see cref="T:HTTPlease.Core.Utilities.DisposableObject"/> has been disposed.
+            </summary>
+            <param name="disposableObject">
+            	The <see cref="T:HTTPlease.Core.Utilities.DisposableObject"/> to examine.
+            </param>
+            <returns>
+            	<c>true</c>, if the object has been disposed; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="disposableObject"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:HTTPlease.Core.Utilities.DisposalHelpers">
+            <summary>
+            	Helper methods for <see cref="T:System.IDisposable"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposalHelpers.ToAggregateDisposable(System.Collections.Generic.IEnumerable{System.IDisposable})">
+            <summary>
+            	Create an aggregate <see cref="T:System.IDisposable"/> that disposes of the specified <see cref="T:System.IDisposable"/>s when it is disposed.
+            </summary>
+            <param name="disposables">
+            	The <see cref="T:System.IDisposable"/>s to aggregate.
+            </param>
+            <returns>
+            	An aggregate <see cref="T:System.IDisposable"/> representing the supplied disposables.
+            </returns>
+            <exception cref="T:System.AggregateException">
+            	One or more aggregated disposables throw exceptions during disposal.
+            </exception>
+        </member>
+        <member name="T:HTTPlease.Core.Utilities.DisposalHelpers.AggregateDisposable">
+            <summary>
+            	Implements disposal of multiple <see cref="T:System.IDisposable"/>s.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Utilities.DisposalHelpers.AggregateDisposable._disposables">
+            <summary>
+            	The disposables to dispose of.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposalHelpers.AggregateDisposable.#ctor(System.Collections.Generic.IEnumerable{System.IDisposable})">
+            <summary>
+            	Create a new aggregate disposable.
+            </summary>
+            <param name="disposables">
+            	A sequence of <see cref="T:System.IDisposable"/>s to aggregate.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.DisposalHelpers.AggregateDisposable.Dispose">
+            <summary>
+            	Dispose the disposables.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.Core.Utilities.ReflectionHelper">
+            <summary>
+            	Helper methods for working with Reflection.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.Core.Utilities.ReflectionHelper._nullableTypes">
+            <summary>
+            	Types that are known to be nullable.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.ReflectionHelper.IsNullable(System.Type)">
+            <summary>
+            	Determine whether a reference to an instance of the type can be <c>null</c>.
+            </summary>
+            <param name="type">
+            	The type.
+            </param>
+            <returns>
+            	<c>true</c>, if the <paramref name="type"/> represents a reference type or a <see cref="T:System.Nullable`1">nullable value type</see>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.Utilities.UriHelper">
+            <summary>
+            	Helper methods for working with <see cref="T:System.Uri"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.ParseQueryParameters(System.Uri)">
+            <summary>
+            	Parse the URI's query parameters.
+            </summary>
+            <param name="uri">
+            	The URI.
+            </param>
+            <returns>
+            	A <see cref="T:System.Collections.Specialized.NameValueCollection"/> containing key / value pairs representing the query parameters.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.WithQueryParameters(System.Uri,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            	Create a copy of URI with its <see cref="P:System.Uri.Query">query</see> component populated with the supplied parameters.
+            </summary>
+            <param name="uri">
+            	The <see cref="T:System.Uri"/> used to construct the URI.
+            </param>
+            <param name="parameters">
+            	A <see cref="T:System.Collections.Specialized.NameValueCollection"/> representing the query parameters.
+            </param>
+            <returns>
+            	A new URI with the specified query.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.WithQueryParameters(System.UriBuilder,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            	Populate the <see cref="P:System.UriBuilder.Query">query</see> component of the URI.
+            </summary>
+            <param name="uriBuilder">
+            	The <see cref="T:System.UriBuilder"/> used to construct the URI
+            </param>
+            <param name="parameters">
+            	A <see cref="T:System.Collections.Specialized.NameValueCollection"/> representing the query parameters.
+            </param>
+            <returns>
+            	The <paramref name="uriBuilder">URI builder</paramref> (enables inline use).
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.AppendRelativeUri(System.Uri,System.Uri)">
+            <summary>
+            	Append a relative URI to the base URI.
+            </summary>
+            <param name="baseUri">
+            	The base URI.
+            
+            	A trailing "/" will be appended, if necessary.
+            </param>
+            <param name="relativeUri">
+            	The relative URI to append (leading slash will be trimmed, if required).
+            </param>
+            <returns>
+            	The concatenated URI.
+            </returns>
+            <remarks>
+            	This function is required because, sometimes, appending of a relative path to a URI can behave counter-intuitively.
+            	If the base URI does not have a trailing "/", then its last path segment is *replaced* by the relative UI. This is hardly ever what you actually want.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.AppendPaths(System.String,System.String)">
+            <summary>
+            	Contatenate 2 relative URI paths.
+            </summary>
+            <param name="basePath">
+            	The base URI path.
+            </param>
+            <param name="relativePath">
+            	The relative URI path to append to the base URI path.
+            </param>
+            <returns>
+            	The appended paths, separated by a single slash.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.Utilities.UriHelper.MergeQueryStrings(System.String,System.String)">
+            <summary>
+            	Merge 2 query strings.
+            </summary>
+            <param name="baseQueryString">
+            	The base query string.
+            
+            	If empty, the additional query string is used.
+            </param>
+            <param name="additionalQueryString">
+            	The additional query string.
+            
+            	If empty, the base query string is used.
+            </param>
+            <returns></returns>
+            <remarks>
+            	Does not remove duplicate parameters.
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.IValueProvider`2">
+            <summary>
+            	Represents the provider for a value from an instance of <typeparamref name="TContext"/>.
+            </summary>
+            <typeparam name="TContext">
+            	The source type from which the value is extracted.
+            </typeparam>
+            <typeparam name="TValue">
+            	The type of value returned by the provider.
+            </typeparam>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.IValueProvider`2.Get(`0)">
+            <summary>
+            	Extract the value from the specified context.
+            </summary>
+            <param name="source">	
+            	The <typeparamref name="TContext"/> instance from which the value is to be extracted.
+            </param>
+            <returns>
+            	The value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProvider`1">
+            <summary>
+            	Factory methods for creating value providers.
+            </summary>
+            <typeparam name="TContext">
+            	The type used as a context for each request.
+            </typeparam>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.FromSelector``1(System.Func{`0,``0})">
+            <summary>
+            	Create a value provider from the specified selector function.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the selector.
+            </typeparam>
+            <param name="selector">
+            	A selector function that, when given an instance of <typeparamref name="TContext"/>, and returns a well-known value of type <typeparamref name="TValue"/> derived from the context.
+            </param>
+            <returns>
+            	The value provider.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.FromFunction``1(System.Func{``0})">
+            <summary>
+            	Create a value provider from the specified function.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the function.
+            </typeparam>
+            <param name="getValue">
+            	A function that returns a well-known value of type <typeparamref name="TValue"/>.
+            </param>
+            <returns>
+            	The value provider.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.FromConstantValue``1(``0)">
+            <summary>
+            	Create a value provider from the specified constant value.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the provider.
+            </typeparam>
+            <param name="value">
+            	A constant value that is returned by the provider.
+            </param>
+            <returns>
+            	The value provider.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProvider`1.SelectorValueProvider`1">
+            <summary>
+            	Value provider that invokes a selector function on the context to extract its value.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the provider.
+            </typeparam>
+        </member>
+        <member name="F:HTTPlease.Core.ValueProviders.ValueProvider`1.SelectorValueProvider`1._selector">
+            <summary>
+            	The selector function that extracts a value from the context.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.SelectorValueProvider`1.#ctor(System.Func{`0,`1})">
+            <summary>
+            	Create a new selector-based value provider.
+            </summary>
+            <param name="selector">
+            	The selector function that extracts a value from the context.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.SelectorValueProvider`1.Get(`0)">
+            <summary>
+            	Extract the value from the specified context.
+            </summary>
+            <param name="source">	
+            	The TContext instance from which the value is to be extracted.
+            </param>
+            <returns>
+            	The value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProvider`1.FunctionValueProvider`1">
+            <summary>
+            	Value provider that invokes a function to extract its value.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the provider.
+            </typeparam>
+        </member>
+        <member name="F:HTTPlease.Core.ValueProviders.ValueProvider`1.FunctionValueProvider`1._getValue">
+            <summary>
+            	The function that is invoked to provide a value.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.FunctionValueProvider`1.#ctor(System.Func{`1})">
+            <summary>
+            	Create a new function-based value provider.
+            </summary>
+            <param name="getValue">
+            	The function that is invoked to provide a value.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.FunctionValueProvider`1.Get(`0)">
+            <summary>
+            	Extract the value from the specified context.
+            </summary>
+            <param name="source">	
+            	The TContext instance from which the value is to be extracted.
+            </param>
+            <returns>
+            	The value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProvider`1.ConstantValueProvider`1">
+            <summary>
+            	Value provider that returns a constant value.
+            </summary>
+            <typeparam name="TValue">
+            	The type of value returned by the provider.
+            </typeparam>
+        </member>
+        <member name="F:HTTPlease.Core.ValueProviders.ValueProvider`1.ConstantValueProvider`1._value">
+            <summary>
+            	The constant value returned by the provider.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.ConstantValueProvider`1.#ctor(`1)">
+            <summary>
+            	Create a new constant value provider.
+            </summary>
+            <param name="value">
+            	The constant value returned by the provider.
+            </param>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProvider`1.ConstantValueProvider`1.Get(`0)">
+            <summary>
+            	Extract the value from the specified context.
+            </summary>
+            <param name="source">	
+            	The TContext instance from which the value is to be extracted.
+            </param>
+            <returns>
+            	The value.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProviderConversion`2">
+            <summary>
+            	Conversion operations for a value provider.
+            </summary>
+            <typeparam name="TContext">
+            	The type used as a context for each request.
+            </typeparam>
+            <typeparam name="TValue">
+            	The type of value returned by the value provider.
+            </typeparam>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProviderConversion`2.#ctor(HTTPlease.Core.ValueProviders.IValueProvider{`0,`1})">
+            <summary>
+            	Create a new value-provider conversion.
+            </summary>
+            <param name="valueProvider">
+            	The value provider being converted.
+            </param>
+        </member>
+        <member name="P:HTTPlease.Core.ValueProviders.ValueProviderConversion`2.ValueProvider">
+            <summary>
+            	The value provider being converted.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProviderConversion`2.ContextTo``1">
+            <summary>
+            	Wrap the specified value provider in a value provider that utilises a more-derived context type.
+            </summary>
+            <typeparam name="TDerivedContext">
+            	The more-derived type used by the new provider as a context for each request.
+            </typeparam>
+            <returns>
+            	The outer (converting) value provider.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProviderConversion`2.ValueToString">
+            <summary>
+            	Wrap the value provider in a value provider that converts its value to a string.
+            </summary>
+            <returns>
+            	The outer (converting) value provider.
+            </returns>
+            <remarks>
+            	If the underlying value is <c>null</c> then the converted string value will be <c>null</c>, too.
+            </remarks>
+        </member>
+        <member name="T:HTTPlease.Core.ValueProviders.ValueProviderExtensions">
+            <summary>
+            	Extension methods for <see cref="T:HTTPlease.Core.ValueProviders.IValueProvider`2"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.Core.ValueProviders.ValueProviderExtensions.Convert``2(HTTPlease.Core.ValueProviders.IValueProvider{``0,``1})">
+            <summary>
+            	Perform a conversion on the value provider.
+            </summary>
+            <typeparam name="TContext">
+            	The source type from which the value is extracted.
+            </typeparam>
+            <typeparam name="TValue">
+            	The type of value extracted by the provider.
+            </typeparam>
+            <param name="valueProvider">
+            	The value provider.
+            </param>
+            <returns>
+            	A <see cref="T:HTTPlease.Core.ValueProviders.ValueProviderConversion`2"/> whose methods can be used to select the conversion to perform on the value converter.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.FactoryExtensions">
+            <summary>
+            	Extension methods for <see cref="T:HTTPlease.HttpRequestFactory"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.FactoryExtensions.Create(HTTPlease.HttpRequestFactory,System.String)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.HttpRequest">
+            <summary>
+            	A template for an HTTP request.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.HttpRequest.DefaultContext">
+            <summary>
+            	The <see cref="T:System.Object"/> used a context for all untyped HTTP requests.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.HttpRequest.BaseProperties">
+            <summary>
+            	The base properties for <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.HttpRequest.Empty">
+            <summary>
+            	An empty <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.Factory">
+            <summary>
+            	The default factory for <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.#ctor(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new HTTP request.
+            </summary>
+            <param name="properties">
+            	The request properties.
+            </param>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.Create(System.String)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.Create(System.Uri)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.RequestActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.ResponseActions">
+            <summary>
+            	Actions (if any) to perform on the incoming response message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.TemplateParameters">
+            <summary>
+                The request's URI template parameters (if any).
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.QueryParameters">
+            <summary>
+                The request's query parameters (if any).
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.BuildRequestMessage(System.Net.Http.HttpMethod,System.Net.Http.HttpContent,System.Uri)">
+            <summary>
+            	Build and configure a new HTTP request message.
+            </summary>
+            <param name="httpMethod">
+            	The HTTP request method to use.
+            </param>
+            <param name="body">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.HTTPlease#IHttpRequest{System#Object}#BuildRequestMessage(System.Net.Http.HttpMethod,System.Object,System.Net.Http.HttpContent,System.Uri)">
+            <summary>
+                Build and configure a new HTTP request message.
+            </summary>
+            <param name="httpMethod">
+                The HTTP request method to use.
+            </param>
+            <param name="context">
+            	The object used as a context for resolving deferred template values.
+            </param>
+            <param name="body">
+                Optional <see cref="T:System.Net.Http.HttpContent" /> representing the request body.
+            </param>
+            <param name="baseUri">
+                An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+                The configured <see cref="T:System.Net.Http.HttpRequestMessage" />.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.HTTPlease#IHttpRequestProperties{System#Object}#RequestActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.HTTPlease#IHttpRequestProperties{System#Object}#ResponseActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.HTTPlease#IHttpRequestProperties{System#Object}#TemplateParameters">
+            <summary>
+                The request's URI template parameters (if any).
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest.HTTPlease#IHttpRequestProperties{System#Object}#QueryParameters">
+            <summary>
+                The request's query parameters (if any).
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.Clone(System.Action{System.Collections.Generic.IDictionary{System.String,System.Object}})">
+            <summary>
+            	Clone the request.
+            </summary>
+            <param name="modifications">
+            	A delegate that performs modifications to the request properties.
+            </param>
+            <returns>
+            	The cloned request.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.CreateInstance(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new instance of the HTTP request using the specified properties.
+            </summary>
+            <param name="requestProperties">
+            	The request properties.
+            </param>
+            <returns>
+            	The new HTTP request instance.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.MergeQueryParameters(System.Uri)">
+            <summary>
+            	Merge the request's query parameters (if any) into the request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+            <returns>
+            	The request URI with query parameters merged into it.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.GetTemplateParameterValues">
+            <summary>
+            	Get a dictionary mapping template parameters (if any) to their current values.
+            </summary>
+            <returns>
+            	A dictionary of key / value pairs (any parameters whose value-getters return null will be omitted).
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest.SetStandardMessageProperties(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Configure standard properties for the specified <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </summary>
+            <param name="requestMessage">
+            	The <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </param>
+        </member>
+        <member name="T:HTTPlease.HttpRequestException`1">
+            <summary>
+            	Exception thrown when an error response is received while making an HTTP request.
+            </summary>
+            <remarks>
+            	TODO: Throw this from response.ReadContentAsAsync&lt;TResponse, TErrorResponse&gt;.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.HttpRequestException`1.#ctor(System.Net.HttpStatusCode,`0)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequestException`1"/>.
+            </summary>
+            <param name="statusCode">
+            	The response's HTTP status code.
+            </param>
+            <param name="response">
+            	The response body.
+            </param>
+        </member>
+        <member name="M:HTTPlease.HttpRequestException`1.#ctor(System.Net.HttpStatusCode,`0,System.String)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequestException`1"/>.
+            </summary>
+            <param name="statusCode">
+            	The response's HTTP status code.
+            </param>
+            <param name="response">
+            	The response body.
+            </param>
+            <param name="message">
+            	The exception message.
+            </param>
+        </member>
+        <member name="P:HTTPlease.HttpRequestException`1.StatusCode">
+            <summary>
+            	The response's HTTP status code.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequestException`1.Response">
+            <summary>
+            	The response body.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequestException`1.Create(System.Net.HttpStatusCode,`0)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequestException`1"/>.
+            </summary>
+            <param name="statusCode">
+            	The HTTP response status code.
+            </param>
+            <param name="response">
+            	A <typeparamref name="TResponse"/> representing the HTTP response body.
+            </param>
+            <returns>
+            	The configured <see cref="T:HTTPlease.HttpRequestException`1"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.HttpRequestFactory">
+            <summary>
+            	A facility for creating <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequestFactory.#ctor(HTTPlease.HttpRequest)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequestFactory"/>.
+            </summary>
+            <param name="baseRequest">
+            	The <see cref="T:HTTPlease.HttpRequest"/> used as a base for requests created by the factory.
+            </param>
+        </member>
+        <member name="P:HTTPlease.HttpRequestFactory.BaseRequest">
+            <summary>
+            	The <see cref="T:HTTPlease.HttpRequest"/> used as a base for requests created by the factory.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequestFactory.Create(System.Uri)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequest"/> with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.HttpRequestFactory`1">
+            <summary>
+            	A facility for creating <see cref="T:HTTPlease.HttpRequest`1"/>s.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+        </member>
+        <member name="M:HTTPlease.HttpRequestFactory`1.#ctor(HTTPlease.HttpRequest{`0})">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequestFactory"/>.
+            </summary>
+            <param name="baseRequest">
+            	The <see cref="T:HTTPlease.HttpRequest`1"/> used as a base for requests created by the factory.
+            </param>
+        </member>
+        <member name="P:HTTPlease.HttpRequestFactory`1.BaseRequest">
+            <summary>
+            	The <see cref="T:HTTPlease.HttpRequest`1"/> used as a base for requests created by the factory.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequestFactory`1.Create(System.Uri)">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpRequest`1"/> with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.HttpRequest`1">
+            <summary>
+            	A template for an HTTP request that resolves deferred values from an instance of <typeparamref name="TContext"/>.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred values.
+            </typeparam>
+        </member>
+        <member name="F:HTTPlease.HttpRequest`1.BaseProperties">
+            <summary>
+            	The base properties for <see cref="T:HTTPlease.HttpRequest"/>s.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.HttpRequest`1.Empty">
+            <summary>
+            	An empty <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.Factory">
+            <summary>
+            	The default factory for <see cref="T:HTTPlease.HttpRequest`1"/>s.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.#ctor(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new HTTP request.
+            </summary>
+            <param name="properties">
+            	The request properties.
+            </param>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.Create(System.String)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.Create(System.Uri)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.RequestActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.ResponseActions">
+            <summary>
+            	Actions (if any) to perform on the incoming response message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.TemplateParameters">
+            <summary>
+                The request's URI template parameters (if any).
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.QueryParameters">
+            <summary>
+                The request's query parameters (if any).
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.BuildRequestMessage(System.Net.Http.HttpMethod,`0,System.Net.Http.HttpContent,System.Uri)">
+            <summary>
+                Build and configure a new HTTP request message.
+            </summary>
+            <param name="httpMethod">
+                The HTTP request method to use.
+            </param>
+            <param name="context">
+            	The object used as a context for resolving deferred template values.
+            </param>
+            <param name="body">
+                Optional <see cref="T:System.Net.Http.HttpContent" /> representing the request body.
+            </param>
+            <param name="baseUri">
+                An optional base URI to use if the request does not already have an absolute request URI.
+            </param>
+            <returns>
+                The configured <see cref="T:System.Net.Http.HttpRequestMessage" />.
+            </returns>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.HTTPlease#IHttpRequestProperties{TContext}#RequestActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.HTTPlease#IHttpRequestProperties{TContext}#ResponseActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.HTTPlease#IHttpRequestProperties{TContext}#TemplateParameters">
+            <summary>
+                The request's URI template parameters (if any).
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpRequest`1.HTTPlease#IHttpRequestProperties{TContext}#QueryParameters">
+            <summary>
+                The request's query parameters (if any).
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.Clone(System.Action{System.Collections.Generic.IDictionary{System.String,System.Object}})">
+            <summary>
+            	Clone the request.
+            </summary>
+            <param name="modifications">
+            	A delegate that performs modifications to the request properties.
+            </param>
+            <returns>
+            	The cloned request.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.CreateInstance(System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">
+            <summary>
+            	Create a new instance of the HTTP request using the specified properties.
+            </summary>
+            <param name="requestProperties">
+            	The request properties.
+            </param>
+            <returns>
+            	The new HTTP request instance.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.MergeQueryParameters(System.Uri,`0)">
+            <summary>
+            	Merge the request's query parameters (if any) into the request URI.
+            </summary>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> from which parameter values will be resolved.
+            </param>
+            <returns>
+            	The request URI with query parameters merged into it.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.GetTemplateParameterValues(`0)">
+            <summary>
+            	Get a dictionary mapping template parameters (if any) to their current values.
+            </summary>
+            <param name="context">
+            	The <typeparamref name="TContext"/> from which parameter values will be resolved.
+            </param>
+            <returns>
+            	A dictionary of key / value pairs (any parameters whose value-getters return null will be omitted).
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpRequest`1.SetStandardMessageProperties(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Configure standard properties for the specified <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </summary>
+            <param name="requestMessage">
+            	The <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </param>
+        </member>
+        <member name="T:HTTPlease.HttpResponse">
+            <summary>
+            	The response from an asynchronous invocation of an <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpResponse.#ctor(HTTPlease.HttpRequest,System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage})">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpResponse"/>.
+            </summary>
+            <param name="request">
+            	The request whose response is represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </param>
+            <param name="task">
+            	The underlying <see cref="T:System.Threading.Tasks.Task`1"/> represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </param>
+        </member>
+        <member name="M:HTTPlease.HttpResponse.#ctor(HTTPlease.HttpRequest,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.HttpResponse"/> for the specified asynchronous action.
+            </summary>
+            <param name="request">
+            	The request whose response is represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </param>
+            <param name="asyncAction">
+            	An asynchronous delegate that produces the action's resulting <see cref="T:System.Net.Http.HttpResponseMessage"/>.
+            </param>
+        </member>
+        <member name="P:HTTPlease.HttpResponse.Request">
+            <summary>
+            	The request whose response is represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.HttpResponse.Task">
+            <summary>
+            	The underlying <see cref="T:System.Threading.Tasks.Task`1"/> represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.HttpResponse.GetAwaiter">
+            <summary>
+            	Get an awaiter for the underlying <see cref="T:System.Threading.Tasks.Task`1"/> represented by the <see cref="T:HTTPlease.HttpResponse"/>.
+            </summary>
+            <returns>
+            	The task awaiter.
+            </returns>
+            <remarks>
+            	Enables directly awaiting the <see cref="T:HTTPlease.HttpResponse"/>.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.HttpResponse.ConfigureAwait(System.Boolean)">
+            <summary>
+            	Configure the way that the response's task is awaited.
+            </summary>
+            <param name="continueOnCapturedContext">
+            	Should the awaited task return to the ambient synchronisation context?
+            </param>
+            <returns>
+            	A <see cref="T:System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1"/> that can be awaited.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.HttpResponse.op_Implicit(HTTPlease.HttpResponse)~System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}">
+            <summary>
+            	Implicit conversion from <see cref="T:HTTPlease.HttpResponse"/> to <see cref="T:System.Threading.Tasks.Task`1"/>
+            </summary>
+            <param name="httpResponse">
+            	The <see cref="T:HTTPlease.HttpResponse"/> to convert.
+            </param>
+            <returns>
+            	The <see cref="T:HTTPlease.HttpResponse"/>'s <see cref="P:HTTPlease.HttpResponse.Task"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.IHttpErrorResponse">
+            <summary>
+                Represents an HTTP error response whose properties can be used to populate an <see cref="T:HTTPlease.HttpRequestException`1"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.IHttpErrorResponse.GetExceptionMesage">
+            <summary>
+                Get the exception message associated with the response.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.IHttpRequest">
+            <summary>
+            	Represents a template for building HTTP requests.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.IHttpRequest.BuildRequestMessage(System.Net.Http.HttpMethod,System.Net.Http.HttpContent,System.Uri)">
+            <summary>
+            	Build and configure a new HTTP request message.
+            </summary>
+            <param name="httpMethod">
+            	The HTTP request method to use.
+            </param>
+            <param name="body">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="baseUri">
+            	An optional base URI to use if the request builder does not already have an absolute request URI.
+            </param>
+            <returns>
+            	The configured <see cref="T:System.Net.Http.HttpRequestMessage"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.IHttpRequest`1">
+            <summary>
+                Represents a template for building HTTP requests with lazily-resolved values extracted from a specific context.
+            </summary>
+            <typeparam name="TContext">
+                The type of object used by the request when resolving deferred values.
+            </typeparam>
+        </member>
+        <member name="M:HTTPlease.IHttpRequest`1.BuildRequestMessage(System.Net.Http.HttpMethod,`0,System.Net.Http.HttpContent,System.Uri)">
+            <summary>
+                Build and configure a new HTTP request message.
+            </summary>
+            <param name="httpMethod">
+                The HTTP request method to use.
+            </param>
+            <param name="context">
+                The <typeparamref name="TContext" /> to use as the context for resolving any deferred template or query parameters.
+            </param>
+            <param name="body">
+                Optional <see cref="T:System.Net.Http.HttpContent" /> representing the request body.
+            </param>
+            <param name="baseUri">
+                An optional base URI to use if the request builder does not already have an absolute request URI.
+            </param>
+            <returns>
+                The configured <see cref="T:System.Net.Http.HttpRequestMessage" />.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.IHttpRequestProperties">
+            <summary>
+            	Represents common properties of templates for building HTTP requests.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties.Uri">
+            <summary>
+            	The request URI.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties.IsUriTemplate">
+            <summary>
+            	Is the request URI a template?
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties.Properties">
+            <summary>
+            	Additional properties for the request.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.IHttpRequestProperties`1">
+            <summary>
+            	Represents common properties of templates for building HTTP requests.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred template parameters.
+            </typeparam>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties`1.RequestActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties`1.ResponseActions">
+            <summary>
+            	Actions (if any) to perform on the outgoing request message.
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties`1.TemplateParameters">
+            <summary>
+                The request's URI template parameters (if any).
+            </summary>
+        </member>
+        <member name="P:HTTPlease.IHttpRequestProperties`1.QueryParameters">
+            <summary>
+                The request's query parameters (if any).
+            </summary>
+        </member>
+        <member name="T:HTTPlease.MessageExtensions">
+            <summary>
+            	Extension methods for <see cref="T:System.Net.Http.HttpRequestMessage"/> / <see cref="T:System.Net.Http.HttpResponseMessage"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.MessageExtensions.IsStreamed(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            	Determine whether the request message has been configured for a streamed response.
+            </summary>
+            <param name="message">
+            	The HTTP request message.
+            </param>
+            <returns>
+            	<c>true</c>, if the request message has been configured for a streamed response; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.MessageExtensions.MarkAsStreamed(System.Net.Http.HttpRequestMessage,System.Boolean)">
+            <summary>
+            	Mark the request message as configured for a streamed / buffered response.
+            </summary>
+            <param name="message">
+            	The HTTP request message.
+            </param>
+            <param name="isStreamed">
+            	If <c>true</c>, the request message is configured for a streamed response; otherwise, it is configured for a buffered response.
+            </param>
+            <returns>
+            	The HTTP request message (enables inline use).
+            </returns>
+        </member>
+        <member name="T:HTTPlease.MessageProperties">
+            <summary>
+            	The names of well-known HttpRequestMessage / HttpResponseMessage properties.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.MessageProperties.Prefix">
+            <summary>
+            	The prefix for HTTPlease property names.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.MessageProperties.Request">
+            <summary>
+            	The <see cref="T:HTTPlease.IHttpRequest"/> that created the message.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.MessageProperties.ContentFormatters">
+            <summary>
+            	The message's collection of content formatters.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.MessageProperties.IsStreamed">
+            <summary>
+            	Is the request configured for a streamed response?
+            </summary>
+        </member>
+        <member name="T:HTTPlease.OtherHttpMethods">
+            <summary>
+            	Additional standard HTTP methods.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.OtherHttpMethods.Patch">
+            <summary>
+            	The HTTP PATCH method.
+            </summary>
+        </member>
+        <member name="T:HTTPlease.RequestExtensions">
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for HTTP headers.
+            </summary>
+            <summary>
+            	Helper methods for <see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extensions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for building request messages.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for query parameters.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for request-configuration actions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for request URIs.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for response-processing actions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest"/> / <see cref="T:HTTPlease.IHttpRequest"/> extension methods for template parameters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithHeader(HTTPlease.HttpRequest,System.String,System.String,System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header to each request.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithHeader``1(HTTPlease.HttpRequest,System.String,System.Func{``0},System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header with its value obtained from the specified delegate.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.AcceptMediaType(HTTPlease.HttpRequest,System.String,System.Nullable{System.Double})">
+            <summary>
+            	Create a copy of the request, but with the specified media type added to the "Accept" header.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="mediaType">
+            	The media-type name.
+            </param>
+            <param name="quality">
+            	An optional media-type quality.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.AcceptNoMediaTypes(HTTPlease.HttpRequest)">
+            <summary>
+            	Create a copy of the request, but with no media types in the "Accept" header.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithIfMatchHeader(HTTPlease.HttpRequest,System.String)">
+            <summary>
+            	Create a copy of the request that adds an "If-Match" header to each request.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithIfMatchHeader(HTTPlease.HttpRequest,System.Func{System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithIfNoneMatchHeader(HTTPlease.HttpRequest,System.String)">
+            <summary>
+            	Create a copy of the request that adds an "If-None-Match" header to each request.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithIfNoneMatchHeader(HTTPlease.HttpRequest,System.Func{System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-None-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithHeaderFromProvider(HTTPlease.HttpRequest,System.String,HTTPlease.Core.ValueProviders.IValueProvider{System.Object,System.String},System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header to each request.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="valueProvider">
+            	The header value provider.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.SetUri(System.Collections.Generic.IDictionary{System.String,System.Object},System.Uri)">
+            <summary>
+            	Configure the request URI (and template status) in the request properties.
+            </summary>
+            <param name="requestProperties">
+            	The request properties to modify.
+            </param>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.EnsureQuoted(System.String)">
+            <summary>
+            	Ensure that the specified string is surrounted by quotes.
+            </summary>
+            <param name="str">
+            	The string to examine.
+            </param>
+            <returns>
+            	The string, with quotes prepended / appended as required.
+            </returns>
+            <remarks>
+            	Some HTTP headers (such as If-Match) require their values to be quoted.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.CreateDeferredParameters``2(``1)">
+            <summary>
+            	Convert the specified object's properties to deferred parameters.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	A sequence of key / value pairs representing the parameters.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithQueryParameter``1(HTTPlease.HttpRequest,System.String,``0)">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="value">
+            	The parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithQueryParameter``1(HTTPlease.HttpRequest,System.String,System.Func{``0})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="getValue">
+            	Delegate that returns the parameter value (cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithQueryParameterFromProvider``1(HTTPlease.HttpRequest,System.String,HTTPlease.Core.ValueProviders.IValueProvider{System.Object,``0})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="valueProvider">
+            	Delegate that, given the current context, returns the parameter value (cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithQueryParameters``1(HTTPlease.HttpRequest,``0)">
+            <summary>
+            	Create a copy of the request, but with query parameters from the specified object's properties.
+            </summary>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithQueryParametersFromProviders(HTTPlease.HttpRequest,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,HTTPlease.Core.ValueProviders.IValueProvider{System.Object,System.String}}})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="queryParameters">
+            	A sequence of 0 or more key / value pairs representing the query parameters (values cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithoutQueryParameter(HTTPlease.HttpRequest,System.String)">
+            <summary>
+            	Create a copy of the request builder without the specified request URI query parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithoutQueryParameters(HTTPlease.HttpRequest,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            	Create a copy of the request builder without the specified request URI query parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="names">
+            	The parameter names.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRequestAction(HTTPlease.HttpRequest,HTTPlease.Core.RequestAction)">
+            <summary>
+            	Create a copy of the request with the specified request-configuration action.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestAction">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRequestAction(HTTPlease.HttpRequest,HTTPlease.Core.RequestAction{System.Object})">
+            <summary>
+            	Create a copy of the request with the specified request-configuration action.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestAction">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRequestAction(HTTPlease.HttpRequest,HTTPlease.Core.RequestAction[])">
+            <summary>
+            	Create a copy of the request with the specified request-configuration actions.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestActions">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRequestAction(HTTPlease.HttpRequest,HTTPlease.Core.RequestAction{System.Object}[])">
+            <summary>
+            	Create a copy of the request with the specified request-configuration actions.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestActions">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.HasAbsoluteUri(HTTPlease.IHttpRequest)">
+            <summary>
+            	Ensure that the <see cref="T:HTTPlease.IHttpRequest"/> has an <see cref="F:System.UriKind.Absolute">absolute</see> <see cref="T:System.Uri">URI</see>.
+            </summary>
+            <returns>
+            	The request's absolute URI.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	The request has a <see cref="F:System.UriKind.Relative">relative</see> <see cref="T:System.Uri">URI</see>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.EnsureAbsoluteUri(HTTPlease.IHttpRequest)">
+            <summary>
+            	Ensure that the <see cref="T:HTTPlease.IHttpRequest"/> has an <see cref="F:System.UriKind.Absolute">absolute</see> <see cref="T:System.Uri">URI</see>.
+            </summary>
+            <returns>
+            	The request's absolute URI.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	The request has a <see cref="F:System.UriKind.Relative">relative</see> <see cref="T:System.Uri">URI</see>.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithBaseUri(HTTPlease.HttpRequest,System.Uri)">
+            <summary>
+            	Create a copy of the request with the specified base URI.
+            </summary>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="baseUri">
+            	The request base URI (must be absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	The request already has an absolute URI.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithUri(HTTPlease.HttpRequest,System.Uri)">
+            <summary>
+            	Create a copy of the request with the specified request URI.
+            </summary>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="requestUri">
+            	The new request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRelativeUri(HTTPlease.HttpRequest,System.String)">
+            <summary>
+            	Create a copy of the request with the specified request URI appended to its existing URI.
+            </summary>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="relativeUri">
+            	The relative request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithRelativeUri(HTTPlease.HttpRequest,System.Uri)">
+            <summary>
+            	Create a copy of the request with the specified request URI appended to its existing URI.
+            </summary>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="relativeUri">
+            	The relative request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithResponseAction(HTTPlease.HttpRequest,HTTPlease.Core.ResponseAction)">
+            <summary>
+            	Create a copy of the request with the specified response-processing action.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseAction">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithResponseAction(HTTPlease.HttpRequest,HTTPlease.Core.ResponseAction{System.Object})">
+            <summary>
+            	Create a copy of the request with the specified response-processing action.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseAction">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithResponseAction(HTTPlease.HttpRequest,HTTPlease.Core.ResponseAction[])">
+            <summary>
+            	Create a copy of the request with the specified response-processing actions.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseActions">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithResponseAction(HTTPlease.HttpRequest,HTTPlease.Core.ResponseAction{System.Object}[])">
+            <summary>
+            	Create a copy of the request with the specified response-processing actions.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseActions">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithTemplateParameter``1(HTTPlease.HttpRequest,System.String,``0)">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="value">
+            	The parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithTemplateParameter``1(HTTPlease.HttpRequest,System.String,System.Func{``0})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="getValue">
+            	Delegate that returns the parameter value (cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithTemplateParameterFromProvider``1(HTTPlease.HttpRequest,System.String,HTTPlease.Core.ValueProviders.IValueProvider{System.Object,``0})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="valueProvider">
+            	A <see cref="T:HTTPlease.Core.ValueProviders.IValueProvider`2">value provider</see> that, given the current context, returns the parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithTemplateParameters``1(HTTPlease.HttpRequest,``0)">
+            <summary>
+            	Create a copy of the request, but with template parameters from the specified object's properties.
+            </summary>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithTemplateParametersFromProviders(HTTPlease.HttpRequest,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,HTTPlease.Core.ValueProviders.IValueProvider{System.Object,System.String}}})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="templateParameters">
+            	A sequence of 0 or more key / value pairs representing the template parameters (values cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithoutTemplateParameter(HTTPlease.HttpRequest,System.String)">
+            <summary>
+            	Create a copy of the request builder without the specified request URI template parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.RequestExtensions.WithoutTemplateParameters(HTTPlease.HttpRequest,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            	Create a copy of the request builder without the specified request URI template parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="names">
+            	The parameter names.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.RequestHeaderExtensions">
+            <summary>
+            	Extension method for <see cref="T:System.Net.Http.Headers.HttpRequestHeaders"/>
+            </summary>
+        </member>
+        <member name="M:HTTPlease.RequestHeaderExtensions.GetOptionalHeaderValue(System.Net.Http.Headers.HttpRequestHeaders,System.String)">
+            <summary>
+            	Retrieve the value of an optional HTTP request header.
+            </summary>
+            <param name="requestHeaders">
+            	The HTTP request headers to examine.
+            </param>
+            <param name="headerName">
+            	The name of the target header.
+            </param>
+            <returns>
+            	The header value, or <c>null</c> if the header is not present (or an <see cref="F:System.String.Empty"/> string if the header is present but has no value).
+            </returns>
+        </member>
+        <member name="T:HTTPlease.TypedClientExtensions">
+            <summary>
+            	Invocation-related extension methods for <see cref="T:System.Net.Http.HttpClient"/>s that use an <see cref="T:HTTPlease.HttpRequest"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.HeadAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP HEAD.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.GetAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP GET.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.PostAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP POST.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="postBody">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.PutAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PUT.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="putBody">
+            	<see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.PatchAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP PATCH.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="patchBody">
+            	<see cref="T:System.Net.Http.HttpContent"/> representing the request body.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.DeleteAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},``0,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute a request as an HTTP DELETE.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.SendAsync``1(System.Net.Http.HttpClient,HTTPlease.HttpRequest{``0},System.Net.Http.HttpMethod,``0,System.Net.Http.HttpContent,System.Threading.CancellationToken)">
+            <summary>
+            	Asynchronously execute the request using the specified HTTP method.
+            </summary>
+            <param name="httpClient">
+            	The <see cref="T:System.Net.Http.HttpClient"/> used to execute the request.
+            </param>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="method">
+            	An <see cref="T:System.Net.Http.HttpMethod"/> representing the method to use.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> instance used as a context for resolving deferred parameters.
+            </param>
+            <param name="body">
+            	Optional <see cref="T:System.Net.Http.HttpContent"/> representing the request body (if any).
+            </param>
+            <param name="cancellationToken">
+            	An optional cancellation token that can be used to cancel the asynchronous operation.
+            </param>
+            <returns>
+            	An <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the response.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedClientExtensions.ExecuteResponseActions``1(HTTPlease.HttpRequest{``0},System.Net.Http.HttpResponseMessage,``0)">
+            <summary>
+            	Execute the request's configured response actions (if any) against the specified response message.
+            </summary>
+            <param name="request">
+            	The <see cref="T:HTTPlease.HttpRequest"/>.
+            </param>
+            <param name="responseMessage">
+            	The HTTP response message.
+            </param>
+            <param name="context">
+            	The <typeparamref name="TContext"/> used as a context for resolving deferred values.
+            </param>
+        </member>
+        <member name="T:HTTPlease.TypedFactoryExtensions">
+            <summary>
+            	Extension methods for <see cref="T:HTTPlease.HttpRequestFactory`1"/>.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.TypedFactoryExtensions.Create``1(HTTPlease.HttpRequestFactory{``0},System.String)">
+            <summary>
+            	Create a new HTTP request with the specified request URI.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="requestFactory">
+            	The HTTP request factory.
+            </param>
+            <param name="requestUri">
+            	The request URI (can be relative or absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.TypedRequestExtensions">
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for HTTP headers.
+            </summary>
+            <summary>
+            	Helper methods for <see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extensions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for building request messages.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for query parameters.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for request-configuration actions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for request URIs.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for response-processing actions.
+            </summary>
+            <summary>
+            	<see cref="T:HTTPlease.HttpRequest`1"/> / <see cref="T:HTTPlease.IHttpRequest`1"/> extension methods for template parameters.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithHeader``2(HTTPlease.HttpRequest{``0},System.String,``1,System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header to each request.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TValue">
+            	The header value data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithHeader``2(HTTPlease.HttpRequest{``0},System.String,System.Func{``1},System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TValue">
+            	The type of header value to add.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithHeader``2(HTTPlease.HttpRequest{``0},System.String,System.Func{``0,``1},System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TValue">
+            	The type of header value to add.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="getValue">
+            	A delegate that extracts the header value from the context for each request.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.AcceptMediaType``1(HTTPlease.HttpRequest{``0},System.String,System.Nullable{System.Double})">
+            <summary>
+            	Create a copy of the request, but with the specified media type added to the "Accept" header.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="mediaType">
+            	The media-type name.
+            </param>
+            <param name="quality">
+            	An optional media-type quality.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.AcceptNoMediaTypes``1(HTTPlease.HttpRequest{``0})">
+            <summary>
+            	Create a copy of the request, but with no media types in the "Accept" header.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfMatchHeader``1(HTTPlease.HttpRequest{``0},System.String)">
+            <summary>
+            	Create a copy of the request that adds an "If-Match" header to each request.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfMatchHeader``1(HTTPlease.HttpRequest{``0},System.Func{``0,System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that extracts the header value from the context for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfMatchHeader``1(HTTPlease.HttpRequest{``0},System.Func{System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfNoneMatchHeader``1(HTTPlease.HttpRequest{``0},System.String)">
+            <summary>
+            	Create a copy of the request that adds an "If-None-Match" header to each request.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerValue">
+            	The header value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfNoneMatchHeader``1(HTTPlease.HttpRequest{``0},System.Func{``0,System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-None-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that extracts the header value from the context for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithIfNoneMatchHeader``1(HTTPlease.HttpRequest{``0},System.Func{System.String})">
+            <summary>
+            	Create a copy of the request that adds an "If-None-Match" header with its value obtained from the specified delegate.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="getValue">
+            	A delegate that returns the header value for each request.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithHeaderFromProvider``1(HTTPlease.HttpRequest{``0},System.String,HTTPlease.Core.ValueProviders.IValueProvider{``0,System.String},System.Boolean)">
+            <summary>
+            	Create a copy of the request that adds a header to each request.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="headerName">
+            	The header name.
+            </param>
+            <param name="valueProvider">
+            	The header value provider.
+            </param>
+            <param name="ensureQuoted">
+            	Ensure that the header value is quoted?
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.SetUri(System.Collections.Generic.IDictionary{System.String,System.Object},System.Uri)">
+            <summary>
+            	Configure the request URI (and template status) in the request properties.
+            </summary>
+            <param name="requestProperties">
+            	The request properties to modify.
+            </param>
+            <param name="requestUri">
+            	The request URI.
+            </param>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.EnsureQuoted(System.String)">
+            <summary>
+            	Ensure that the specified string is surrounted by quotes.
+            </summary>
+            <param name="str">
+            	The string to examine.
+            </param>
+            <returns>
+            	The string, with quotes prepended / appended as required.
+            </returns>
+            <remarks>
+            	Some HTTP headers (such as If-Match) require their values to be quoted.
+            </remarks>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.CreateDeferredParameters``2(``1)">
+            <summary>
+            	Convert the specified object's properties to deferred parameters.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	A sequence of key / value pairs representing the parameters.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithQueryParameter``2(HTTPlease.HttpRequest{``0},System.String,``1)">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <typeparam name="TValue">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="value">
+            	The parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithQueryParameter``1(HTTPlease.HttpRequest{``0},System.String,System.Func{System.Object})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="getValue">
+            	Delegate that returns the parameter value (cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithQueryParameterFromProvider``1(HTTPlease.HttpRequest{``0},System.String,HTTPlease.Core.ValueProviders.IValueProvider{``0,System.Object})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="valueProvider">
+            	Delegate that, given the current context, returns the parameter value (cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithQueryParametersFrom``2(HTTPlease.HttpRequest{``0},``1)">
+            <summary>
+            	Create a copy of the request, but with query parameters from the specified object's properties.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithQueryParametersFromProviders``1(HTTPlease.HttpRequest{``0},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,HTTPlease.Core.ValueProviders.IValueProvider{``0,System.String}}})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI query parameters.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="queryParameters">
+            	A sequence of 0 or more key / value pairs representing the query parameters (values cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithoutQueryParameter``1(HTTPlease.HttpRequest{``0},System.String)">
+            <summary>
+            	Create a copy of the request builder without the specified request URI query parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithoutQueryParameters``1(HTTPlease.HttpRequest{``0},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            	Create a copy of the request builder without the specified request URI query parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="names">
+            	The parameter names.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRequestAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.RequestAction)">
+            <summary>
+            	Create a copy of the request with the specified request-configuration action.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestAction">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRequestAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.RequestAction{``0})">
+            <summary>
+            	Create a copy of the request with the specified request-configuration action.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestAction">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRequestAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.RequestAction[])">
+            <summary>
+            	Create a copy of the request with the specified request-configuration actions.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestActions">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRequestAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.RequestAction{``0}[])">
+            <summary>
+            	Create a copy of the request with the specified request-configuration actions.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="requestActions">
+            	A delegate that configures outgoing request messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithBaseUri``1(HTTPlease.HttpRequest{``0},System.Uri)">
+            <summary>
+            	Create a copy of the request with the specified base URI.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="baseUri">
+            	The request base URI (must be absolute).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            	The request already has an absolute URI.
+            </exception>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithUri``1(HTTPlease.HttpRequest{``0},System.Uri)">
+             <summary>
+            		Create a copy of the request with the specified request URI.
+             </summary>
+             <typeparam name="TContext">
+            		The type of object used as a context for resolving deferred parameters.
+             </typeparam>
+             <param name="request">
+            		The request.
+             </param>
+             <param name="requestUri">
+            		The new request URI.
+            
+            		Must be an absolute URI (otherwise, use <see cref="M:HTTPlease.TypedRequestExtensions.WithRelativeUri``1(HTTPlease.HttpRequest{``0},System.Uri)"/>).
+             </param>
+             <returns>
+            		The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+             </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRelativeUri``1(HTTPlease.HttpRequest{``0},System.String)">
+            <summary>
+            	Create a copy of the request with the specified request URI appended to its existing URI.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="relativeUri">
+            	The relative request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithRelativeUri``1(HTTPlease.HttpRequest{``0},System.Uri)">
+            <summary>
+            	Create a copy of the request with the specified request URI appended to its existing URI.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <param name="request">
+            	The request.
+            </param>
+            <param name="relativeUri">
+            	The relative request URI.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithResponseAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.ResponseAction)">
+            <summary>
+            	Create a copy of the request with the specified response-processing action.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseAction">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithResponseAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.ResponseAction{``0})">
+            <summary>
+            	Create a copy of the request with the specified response-processing action.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseAction">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithResponseAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.ResponseAction[])">
+            <summary>
+            	Create a copy of the request with the specified response-processing actions.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseActions">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithResponseAction``1(HTTPlease.HttpRequest{``0},HTTPlease.Core.ResponseAction{``0}[])">
+            <summary>
+            	Create a copy of the request with the specified response-processing actions.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used by the request when resolving deferred template parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="responseActions">
+            	A delegate that configures incoming response messages.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParameter``2(HTTPlease.HttpRequest{``0},System.String,``1)">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TValue">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="value">
+            	The parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParameter``2(HTTPlease.HttpRequest{``0},System.String,System.Func{``1})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="getValue">
+            	Delegate that returns the parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParameter``2(HTTPlease.HttpRequest{``0},System.String,System.Func{``0,``1})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="getValue">
+            	Delegate that returns the parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParameterFromProvider``2(HTTPlease.HttpRequest{``0},System.String,HTTPlease.Core.ValueProviders.IValueProvider{``0,``1})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameter.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TParameter">
+            	The parameter data-type.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <param name="valueProvider">
+            	A <see cref="T:HTTPlease.Core.ValueProviders.IValueProvider`2">value provider</see> that, given the current context, returns the parameter value.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParameters``2(HTTPlease.HttpRequest{``0},``1)">
+            <summary>
+            	Create a copy of the request, but with template parameters from the specified object's properties.
+            </summary>
+            <typeparam name="TContext">
+            	The type of object used as a context for resolving deferred parameters.
+            </typeparam>
+            <typeparam name="TParameters">
+            	The type of object whose properties will form the parameters.
+            </typeparam>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="parameters">
+            	The object whose properties will form the parameters.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithTemplateParametersFromProviders``1(HTTPlease.HttpRequest{``0},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,HTTPlease.Core.ValueProviders.IValueProvider{``0,System.String}}})">
+            <summary>
+            	Create a copy of the request builder with the specified request URI template parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="templateParameters">
+            	A sequence of 0 or more key / value pairs representing the template parameters (values cannot be <c>null</c>).
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithoutTemplateParameter``1(HTTPlease.HttpRequest{``0},System.String)">
+            <summary>
+            	Create a copy of the request builder without the specified request URI template parameter.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="name">
+            	The parameter name.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.TypedRequestExtensions.WithoutTemplateParameters``1(HTTPlease.HttpRequest{``0},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            	Create a copy of the request builder without the specified request URI template parameters.
+            </summary>
+            <param name="request">
+            	The HTTP request.
+            </param>
+            <param name="names">
+            	The parameter names.
+            </param>
+            <returns>
+            	The new <see cref="T:HTTPlease.HttpRequest`1"/>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.UriTemplate">
+            <summary>
+            	Populates parameterised URI templates.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.UriTemplate._template">
+            <summary>
+            	The URI template.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.UriTemplate._uriSegments">
+            <summary>
+            	The template's URI segments.
+            </summary>
+        </member>
+        <member name="F:HTTPlease.UriTemplate._querySegments">
+            <summary>
+            	The template's URI segments.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.UriTemplate.#ctor(System.String)">
+            <summary>
+            	Create a new URI template.
+            </summary>
+            <param name="template">
+            	The template.
+            </param>
+        </member>
+        <member name="M:HTTPlease.UriTemplate.Populate(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            	Build a URI from the template.
+            </summary>
+            <param name="templateParameters">
+            	A dictionary containing the template parameters.
+            </param>
+            <returns>
+            	The generated URI.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.UriTemplate.Populate(System.Uri,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            	Build a URI from the template.
+            </summary>
+            <param name="baseUri">
+            	The base URI, or <c>null</c> to generate a relative URI.
+            </param>
+            <param name="templateParameters">
+            	A dictionary containing the template parameters.
+            </param>
+            <returns>
+            	The generated URI.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.UriTemplate.IsTemplate(System.Uri)">
+            <summary>
+            	Does the specified URI represent a template?
+            </summary>
+            <param name="uri">
+            	The URI.
+            </param>
+            <returns>
+            	<c>true</c>, if any of the URI's components are parameterised (i.e. have non-constant values); otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:HTTPlease.UriTemplate.IsTemplate(System.String)">
+            <summary>
+            	Does the specified URI represent a template?
+            </summary>
+            <param name="uri">
+            	The URI.
+            </param>
+            <returns>
+            	<c>true</c>, if any of the URI's components are parameterised (i.e. have non-constant values); otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:HTTPlease.UriTemplateException">
+            <summary>
+            	Exception raised when a <see cref="T:HTTPlease.UriTemplate"/> is invalid or is missing required information.
+            </summary>
+        </member>
+        <member name="M:HTTPlease.UriTemplateException.#ctor(System.String,System.Object[])">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.UriTemplateException"/>.
+            </summary>
+            <param name="messageOrFormat">
+            	The exception message or message-format specifier.
+            </param>
+            <param name="formatArguments">
+            	Optional message format arguments.
+            </param>
+        </member>
+        <member name="M:HTTPlease.UriTemplateException.#ctor(System.Exception,System.String,System.Object[])">
+            <summary>
+            	Create a new <see cref="T:HTTPlease.UriTemplateException"/>.
+            </summary>
+            <param name="innerException">
+            	The exception that caused this exception to be raised.
+            </param>
+            <param name="messageOrFormat">
+            	The exception message or message-format specifier.
+            </param>
+            <param name="formatArguments">
+            	Optional message format arguments.
+            </param>
+        </member>
+    </members>
+</doc>

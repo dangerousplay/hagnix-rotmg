@@ -1,0 +1,17 @@
+/wServer
+/server
+/AdminPanel
+/terrain
+/.idea
+/.vs
+/Muledump-PrivateServer
+/Json2Wmap
+/packages
+/Package images
+/Client Updater
+.gitignore
+RotMG.Common.dll
+client-release.swf
+/BehaviorConverter
+/DungeonGen
+/db
