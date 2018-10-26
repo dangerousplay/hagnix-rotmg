@@ -20,7 +20,7 @@ using wServer.realm;
 
 namespace wServer.networking.redis
 {
-    internal class RedisManager : IDisposable
+    internal class RedisManager
     {
         private static readonly RedisManager instance = new RedisManager();
 
@@ -240,7 +240,7 @@ namespace wServer.networking.redis
                                 var account = e.GetAccountByUUID(playerch.email, new XmlData());
                                 if (account == null)
                                 {
-                                    RespondRequest(Response<string>.BadRequest(request.id));
+                                    RespondRequest(Response<string>.NotFound(request.id));
                                     return;
                                 }
 
@@ -250,7 +250,7 @@ namespace wServer.networking.redis
                                 account.Credits = playerch.gold > 0 ? playerch.gold : account.Credits;
                                 account.Password = !string.IsNullOrEmpty(playerch.password)
                                     ? playerch.password
-                                    : account.Password;
+                                    : null;
                                 
                                 e.SaveAccount(account);
                             });

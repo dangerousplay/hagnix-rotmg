@@ -1579,9 +1579,40 @@ bestFame = GREATEST(bestFame, @bestFame);";
             cmd.ExecuteNonQuery();
         }
 
-        public Boolean SaveAccount(Account account)
+        public bool SaveAccount(Account account)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cmd = CreateQuery();
+                var password = account.Password == null ? null : ", password=SHA1(@password)";
+                cmd.CommandText = $"UPDATE accounts SET rank=@rank {password}, name=@name WHERE uuid=@uuid;";
+          
+                cmd.Parameters.AddWithValue("@rank", account.Rank);
+                cmd.Parameters.AddWithValue("@name", account.Name);
+                cmd.Parameters.AddWithValue("@uuid", account.Email);
+           
+                if (!string.IsNullOrEmpty(password))
+                    cmd.Parameters.AddWithValue("@password", account.Password);
+            
+                cmd.ExecuteNonQuery();
+
+                cmd = CreateQuery();
+
+                cmd.CommandText = $"UPDATE stats SET credits=@credits fortuneTokens=@tokens WHERE accId=@accid";
+
+                cmd.Parameters.AddWithValue("@accid", account.AccountId);
+                cmd.Parameters.AddWithValue("@tokens", account.FortuneTokens);
+                cmd.Parameters.AddWithValue("@credits", account.Credits);
+
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                return false;
+            }
+            
         }
     }
 }
