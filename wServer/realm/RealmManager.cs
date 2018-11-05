@@ -93,6 +93,7 @@ namespace wServer.realm
         };
         public static List<string> CurrentRealmNames = new List<string>();
         public const int MAX_REALM_PLAYERS = 85;
+        private string WHITE_LIST = Environment.GetEnvironmentVariable("WHITE_LIST");
 
 //        private static readonly ILog log = LogManager.GetLogger(typeof(RealmManager));
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
@@ -368,9 +369,8 @@ namespace wServer.realm
             if (acc.Banned)
                 return false;
 
-            //TODO remove this on production !!!
-//            if (!AuthorizedList.ContainsKey(acc.Email))
-//                return false;
+            if (!AuthorizedList.ContainsKey(acc.Email) && !string.IsNullOrEmpty(WHITE_LIST) && bool.Parse(WHITE_LIST))
+                return false;
             
             psr.Id = Interlocked.Increment(ref nextClientId);
             Client dummy;
