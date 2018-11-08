@@ -79,7 +79,7 @@ namespace server.account
                 }
                 else
                 {
-                    var acc = db.Register(Query["newGUID"], Query["newPassword"], false, Program.GameData);
+                    var acc = db.Register(Query["newGUID"], Query["newPassword"], "", false, Program.GameData);
                     if (acc != null)
                     {
                         if (Program.Settings.GetValue<bool>("verifyEmail"))

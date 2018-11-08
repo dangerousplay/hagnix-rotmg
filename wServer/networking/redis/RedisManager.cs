@@ -153,11 +153,11 @@ namespace wServer.networking.redis
 
                             var email = array[0]["email"].ToString();
 
-                            var player = Realm.FindPlayerByEmail(email);
+                            var player = Realm.FindPlayerByEmail(email).Client.Account;
 
                             if (player != null)
-                                RespondRequest(Response<PlayerTSon>.Ok(request.id,
-                                    new PlayerTSon(player.Client.Account.Name, player.Client.Account.Email)));
+                                RespondRequest(Response<Player>.Ok(request.id,
+                                    new Player(player.Name, player.Admin, player.FortuneTokens, player.Credits, player.Email, null)));
                             else
                                 RespondRequest(Response<string>.NotFound(request.id));
                         }
@@ -207,10 +207,10 @@ namespace wServer.networking.redis
                         }
                         else if (request.command.EqualsIgnoreCase(Command.LIST.nome))
                         {
-                            var clientes = Realm.Clients.Select(R =>
-                                new PlayerTSon(R.Value.Account.Name, R.Value.Account.Email));
+                            var clientes = Realm.Clients.Select(R => R.Value.Account).Select(R =>
+                                new Player(R.Name, R.Admin, R.FortuneTokens, R.Credits, R.Email, null));
 
-                            RespondRequest(Response<IEnumerable<PlayerTSon>>.Ok(request.id, clientes));
+                            RespondRequest(Response<IEnumerable<Player>>.Ok(request.id, clientes));
                         } 
                         else if (request.command.EqualsIgnoreCase(Command.CREATE_PLAYER.nome))
                         {
@@ -218,22 +218,31 @@ namespace wServer.networking.redis
 
                             var email = jarr[0]["email"].ToString();
                             var password = jarr[0]["password"].ToString();
+                            var objectId = jarr[0]["object_id"].ToString();
                             
-                            using (var db = new Database())
+                            Realm.Database.DoActionAsync(db =>
                             {
-                                var cmd = db.Register(email, password, false, new XmlData());
+                                var cmd = db.Register(email, password, objectId, false, new XmlData());
                                 
                                 if (cmd != null)
                                     RespondRequest(Response<string>.Ok(request.id));
                                 else
                                     RespondRequest(Response<string>.BadRequest(request.id, "Email already in use."));
-                            }
+                            });
+                         
                         } else if (request.command.EqualsIgnoreCase(Command.DELETE_PLAYER.nome))
                         {
-                            RespondRequest(Response<string>.BadRequest(request.id));
+                            var jarr = (JArray) request.args;
+                            var id = jarr[0]["id"].ToString();
+                            
+                            Realm.Database.DoActionAsync(db =>
+                            {
+                                RespondRequest(db.DeletePlayer(id) ? Response<string>.Ok(request.id) : Response<string>.BadRequest(request.id));
+                            });
+                            
                         } else if (request.command.EqualsIgnoreCase(Command.CHANGE_PLAYER.nome))
                         {
-                            var playerch = (PlayerInfo) request.args;
+                            var playerch = JsonConvert.DeserializeObject<Player>(((JArray) request.args)[0].ToString());
 
                             Realm.Database.DoActionAsync(e =>
                             {
@@ -253,6 +262,8 @@ namespace wServer.networking.redis
                                     : null;
                                 
                                 e.SaveAccount(account);
+
+                                RespondRequest(Response<Player>.Ok(request.id, playerch));
                             });
                         }
                         else
@@ -295,29 +306,11 @@ namespace wServer.networking.redis
             public string nome { get; }
         }
 
-        private class PlayerTSon
-        {
-            public PlayerTSon(string username, string email)
-            {
-                this.username = username;
-                this.email = email;
-            }
-
-            public string username { get; }
-            public string email { get; }
-
-            public override string ToString()
-            {
-                return JsonConvert.SerializeObject(this);
-            }
-        }
-
         private class Response<T>
         {
             public static Response<string> BAD_REQUEST = new Response<string>(400, "RND-ID", "Bad request");
             public static Response<string> OK = new Response<string>(200, "RND-ID", "OK");
             private string id;
-            private string sender = "server";
 
             public Response()
             {
@@ -364,8 +357,22 @@ namespace wServer.networking.redis
             }
         }
 
-        private class PlayerInfo
+        private class Player
         {
+            public Player(string name, bool admin, int token, int gold, string email, string password)
+            {
+                this.name = name;
+                this.admin = admin;
+                this.token = token;
+                this.gold = gold;
+                this.email = email;
+                this.password = password;
+            }
+
+            public Player()
+            {
+            }
+
             public string name;
             public bool admin;
             public int token;

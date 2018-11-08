@@ -296,7 +296,7 @@ AND characters.charId=death.chrId;";
             cmd.ExecuteNonQuery();
         }
 
-        public Account Register(string uuid, string password, bool isGuest, XmlData data)
+        public Account Register(string uuid, string password, string objectId = "", bool isGuest, XmlData data)
         {
             MySqlCommand cmd = CreateQuery();
             cmd.CommandText = "SELECT COUNT(id) FROM accounts WHERE uuid=@uuid;";
@@ -1613,6 +1613,27 @@ bestFame = GREATEST(bestFame, @bestFame);";
                 return false;
             }
             
+        }
+
+        public Boolean DeletePlayer(string id)
+        {
+            try
+            {
+                var cmd = CreateQuery();
+                var email = Regex.Match(id,
+                    "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])").Success;
+                
+                cmd.CommandText = email ? $"DELETE FROM accounts WHERE uuid=@id;" : $"DELETE FROM accounts WHERE object_id=@id;";
+          
+                cmd.Parameters.AddWithValue("@id", id);
+
+                return cmd.ExecuteNonQuery() != 0;
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                return false;
+            }
         }
     }
 }
