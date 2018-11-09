@@ -296,7 +296,7 @@ AND characters.charId=death.chrId;";
             cmd.ExecuteNonQuery();
         }
 
-        public Account Register(string uuid, string password, string objectId = "", bool isGuest, XmlData data)
+        public Account Register(string uuid, string password, string objectId, bool isGuest, XmlData data)
         {
             MySqlCommand cmd = CreateQuery();
             cmd.CommandText = "SELECT COUNT(id) FROM accounts WHERE uuid=@uuid;";
@@ -305,7 +305,7 @@ AND characters.charId=death.chrId;";
 
             cmd = CreateQuery();
             cmd.CommandText =
-                "INSERT INTO `accounts`(`uuid`, `password`, `name`, `rank`, `namechosen`, `verified`, `guild`, `guildRank`, `guildFame`, `vaultCount`, `maxCharSlot`, `regTime`, `guest`, `banned`, `locked`, `ignored`, `gifts`, `isAgeVerified`, `authToken`) VALUES(@uuid, SHA1(@password), @randomName, @rank, 0, 0, 0, 0, 0, 1, 2, @regTime, @guest, 0, @empty, @empty, @empty, 1, @authToken);";
+                "INSERT INTO `accounts`(`uuid`, `password`, `object_id`, `name`, `rank`, `namechosen`, `verified`, `guild`, `guildRank`, `guildFame`, `vaultCount`, `maxCharSlot`, `regTime`, `guest`, `banned`, `locked`, `ignored`, `gifts`, `isAgeVerified`, `authToken`) VALUES(@uuid, SHA1(@password), @object_id, @randomName, @rank, 0, 0, 0, 0, 0, 1, 2, @regTime, @guest, 0, @empty, @empty, @empty, 1, @authToken);";
             cmd.Parameters.AddWithValue("@uuid", uuid);
             cmd.Parameters.AddWithValue("@randomName", Names[new Random().Next(0, Names.Length)]);
             cmd.Parameters.AddWithValue("@password", password);
@@ -314,6 +314,7 @@ AND characters.charId=death.chrId;";
             cmd.Parameters.AddWithValue("@regTime", DateTime.Now);
             cmd.Parameters.AddWithValue("@authToken", GenerateRandomString(128));
             cmd.Parameters.AddWithValue("@empty", "");
+            cmd.Parameters.AddWithValue("@object_id", objectId);
 
             if (emails.Contains(uuid))
                 cmd.Parameters.AddWithValue("@rank", 1);

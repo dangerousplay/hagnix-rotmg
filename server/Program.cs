@@ -9,6 +9,8 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using db;
 using db.data;
@@ -42,6 +44,9 @@ namespace server
 
         internal static string InstanceId { get; set; }
 
+        [DllImport("kubego.so")]
+        private static extern void Init(string namspace, string configmap);
+
         private static void Main(string[] args)
         {
 //            XmlConfigurator.ConfigureAndWatch(new FileInfo("log4net_server.config"));
@@ -64,7 +69,7 @@ namespace server
                 dbAuth ?? Settings.GetValue<string>("db_auth", ""));
 
             GameData = new XmlData();
-
+           
             InstanceId = Guid.NewGuid().ToString();
             Console.CancelKeyPress += (sender, e) => e.Cancel = true;
 

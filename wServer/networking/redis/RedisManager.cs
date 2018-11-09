@@ -38,6 +38,7 @@ namespace wServer.networking.redis
                 var port = Environment.GetEnvironmentVariable("REDIS_PORT") != null
                     ? Environment.GetEnvironmentVariable("REDIS_PORT").AsInt()
                     : 0;
+              
                 
                 var config = new ConfigurationOptions()
                 {
@@ -48,9 +49,9 @@ namespace wServer.networking.redis
                         }
                     },
                     Password = password ?? "",
-                    UseSsl = true,
-                    Ssl = true,
-                    AbortOnConnectFail = false
+                    //Ssl = true,
+                    AbortOnConnectFail = false,
+                    ReconnectRetryPolicy = new LinearRetry(1000)
                 };
                 
                 log.Info($"Redis connection: {JsonConvert.SerializeObject(config)}");
@@ -100,12 +101,14 @@ namespace wServer.networking.redis
 
         private void SetEvents()
         {
+            log.Info($"Redis starting Listening on {REQUEST_CHANNEL}");
+            
             redis.GetSubscriber().Subscribe(REQUEST_CHANNEL, (channel, message) =>
             {
                 try
                 {
                     var request = JsonConvert.DeserializeObject<Request<object>>(message);
-
+                    
                     try
                     {
                         if (request.command.EqualsIgnoreCase(Command.AUTHORIZE.nome))
@@ -265,6 +268,9 @@ namespace wServer.networking.redis
 
                                 RespondRequest(Response<Player>.Ok(request.id, playerch));
                             });
+                        } else if (request.command.EqualsIgnoreCase("SERVER_INFO"))
+                        {
+                            RespondRequest(Response<Server>.Ok(request.id, new Server("Server", Realm.Clients.Count, Realm.MaxClients)));
                         }
                         else
                         {
@@ -297,6 +303,7 @@ namespace wServer.networking.redis
             public static readonly Command CREATE_PLAYER = new Command("CREATE_PLAYER");
             public static readonly Command DELETE_PLAYER = new Command("DELETE_PLAYER");
             public static readonly Command CHANGE_PLAYER = new Command("CHANGE_PLAYER");
+            public static readonly Command SERVER_INFO = new Command("SERVER_INFO");
 
             public Command(string nome)
             {
@@ -308,10 +315,6 @@ namespace wServer.networking.redis
 
         private class Response<T>
         {
-            public static Response<string> BAD_REQUEST = new Response<string>(400, "RND-ID", "Bad request");
-            public static Response<string> OK = new Response<string>(200, "RND-ID", "OK");
-            private string id;
-
             public Response()
             {
             }
@@ -323,8 +326,12 @@ namespace wServer.networking.redis
                 this.content = content;
             }
 
+            [JsonProperty]
             private uint status { get; }
+            [JsonProperty]
             private T content { get; }
+            [JsonProperty]
+            private string id;
 
             public static Response<string> BadRequest(string id)
             {
@@ -357,6 +364,24 @@ namespace wServer.networking.redis
             }
         }
 
+        private class Server
+        {
+            [JsonProperty]
+            private string name;
+            [JsonProperty]
+            private int players;
+            [JsonProperty]
+            private int capacity;
+
+            public Server(string name, int players, int capacity)
+            {
+                this.name = name;
+                this.players = players;
+                this.capacity = capacity;
+            }
+
+        }
+        
         private class Player
         {
             public Player(string name, bool admin, int token, int gold, string email, string password)
@@ -383,8 +408,8 @@ namespace wServer.networking.redis
 
         private class Request<T>
         {
-            public readonly T args;
-            public readonly string command;
+            public T args;
+            public string command;
             public string id;
 
             public Request()

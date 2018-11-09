@@ -14,9 +14,12 @@ using System.Xml.Serialization;
 using db;
 using MySql.Data.MySqlClient;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
 using GoogleMaps.LocationServices;
 using Newtonsoft.Json;
 using db.data;
+using RestSharp;
 
 #endregion
 
@@ -24,9 +27,8 @@ namespace server.@char
 {
     internal class list : RequestHandler
     {
-        
         public MapPoint GetLatLong(string address)
-        {
+        {          
             if (address == "") return null;
             try
             {
@@ -139,6 +141,13 @@ namespace server.@char
         List<ServerItem> GetServerList()
         {
             var ret = new List<ServerItem>();
+            var config = Environment.GetEnvironmentVariable("CONFIGMAP");
+            
+            if (!string.IsNullOrEmpty(config))
+            {
+                
+            }
+            
             int num = Program.Settings.GetValue<int>("svrNum");
             for (int i = 0; i < num; i++)
             {

@@ -113,14 +113,6 @@
       <HintPath>..\packages\HTTPlease.Formatters.Json.1.8.2\lib\netstandard1.3\HTTPlease.Formatters.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="KubeClient, Version=2.1.6.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\KubeClient.2.1.6\lib\netstandard1.4\KubeClient.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="KubernetesClient, Version=1.2.0.0, Culture=neutral, PublicKeyToken=a0f90e8c9af122de">
-      <HintPath>..\packages\KubernetesClient.1.2.7-g09a8c8773a\lib\netstandard1.4\KubernetesClient.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MailKit">
       <HintPath>..\packages\MailKit.0.97.0.0\lib\net45\MailKit.dll</HintPath>
     </Reference>
