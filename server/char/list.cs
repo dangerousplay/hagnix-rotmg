@@ -141,12 +141,6 @@ namespace server.@char
         List<ServerItem> GetServerList()
         {
             var ret = new List<ServerItem>();
-            var config = Environment.GetEnvironmentVariable("CONFIGMAP");
-            
-            if (!string.IsNullOrEmpty(config))
-            {
-                
-            }
             
             int num = Program.Settings.GetValue<int>("svrNum");
             for (int i = 0; i < num; i++)

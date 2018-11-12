@@ -22,6 +22,9 @@ namespace db
         public SimpleSettings(string id)
         {
             log.Info($"Loading settings for '{id}'...");
+            
+            log.Info("Init watching folder for settings change");
+            InitWatcher();
 
             values = new Dictionary<string, string>();
             this.id = id;
@@ -52,7 +55,7 @@ namespace db
             else
                 log.Info("Settings not found.");
             
-            InitWatcher();
+          
         }
 
         private void InitWatcher()
