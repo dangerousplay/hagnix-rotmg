@@ -1,0 +1,2 @@
+./kubego &
+mono server.exe

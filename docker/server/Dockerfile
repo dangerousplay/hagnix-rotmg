@@ -4,5 +4,9 @@ WORKDIR /app
 
 COPY ./bin/Release .
 
-ENTRYPOINT ["mono", "server.exe"]
+RUN wget https://github.com/dangerousplay/hagnix-go/releases/download/1.0/kubego
+
+COPY /docker/server/server.sh .
+
+ENTRYPOINT ["./server.sh"]
 
