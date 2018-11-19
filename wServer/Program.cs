@@ -67,7 +67,7 @@ namespace wServer
                 manager.Run();
 
                 RedisManager.GetInstance().Realm = manager;
-                RedisManager.GetInstance().Start();
+                RedisManager.GetInstance().PopulateCommands();
 
                 Server server = new Server(manager);
                 PolicyServer policy = new PolicyServer();
@@ -97,6 +97,7 @@ namespace wServer
             {
                 log.Fatal(e);
 
+                if(manager?.Clients != null)
                 foreach (var c in manager.Clients)
                 {
                     c.Value.Disconnect();

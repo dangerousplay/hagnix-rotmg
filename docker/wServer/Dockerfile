@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY ./bin/Release .
 
-ENTRYPOINT ["mono", "wServer.exe"]
+ENTRYPOINT ["mono", "--debug", "wServer.exe"]

@@ -1,0 +1,11 @@
+[Unit]
+Description=Kubego watcher
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/app/kubego
+
+[Install]
+WantedBy=multi-user.target

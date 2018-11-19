@@ -92,6 +92,7 @@
     <Compile Include="data\Descriptors.cs" />
     <Compile Include="data\XmlDatas.cs" />
     <Compile Include="AccountDataHelper.cs" />
+    <Compile Include="EnvironmentSettings.cs" />
     <Compile Include="FameStats.cs" />
     <Compile Include="IFeedable.cs" />
     <Compile Include="ISimpleSettings.cs" />

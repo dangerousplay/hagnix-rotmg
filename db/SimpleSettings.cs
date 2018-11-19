@@ -23,13 +23,13 @@ namespace db
         {
             log.Info($"Loading settings for '{id}'...");
             
-            log.Info("Init watching folder for settings change");
-            InitWatcher();
-
             values = new Dictionary<string, string>();
             this.id = id;
             this.path = Environment.CurrentDirectory;
             cfgFile = Path.Combine(Environment.CurrentDirectory, id + ".cfg");
+            
+            log.Info("Init watching folder for settings change");
+            InitWatcher();
             if (File.Exists(cfgFile))
                 using (StreamReader rdr = new StreamReader(File.OpenRead(cfgFile)))
                 {

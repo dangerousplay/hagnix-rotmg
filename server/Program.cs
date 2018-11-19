@@ -60,7 +60,12 @@ namespace server
             var dbUser = Environment.GetEnvironmentVariable("DB_USER");
             var dbAuth = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-            Settings = new SimpleSettings("server");
+            var settingVariable = Environment.GetEnvironmentVariable("SETTINGS_VARIABLE");
+
+            if(string.IsNullOrEmpty(settingVariable))
+                Settings = new SimpleSettings("server");
+              else 
+                Settings = new EnvironmentSettings(settingVariable);
 
             Database = new Database(
                 dbHost ?? Settings.GetValue<string>("db_host", "127.0.0.1"),
